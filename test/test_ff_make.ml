@@ -61,7 +61,9 @@ module MakeValueGeneration (FiniteField : Ff.T) = struct
 
   let get_tests () =
     let open Alcotest in
-    ( Printf.sprintf "value generation Ff order %s" (Z.to_string FiniteField.order),
+    ( Printf.sprintf
+        "value generation Ff order %s"
+        (Z.to_string FiniteField.order),
       [ test_case "zero" `Quick (repeat 1000 zero);
         test_case "random" `Quick (repeat 1000 random);
         test_case
@@ -90,14 +92,16 @@ module MakeIsZero (FiniteField : Ff.T) = struct
   let with_random_value () =
     assert (FiniteField.is_zero (FiniteField.random ()) = false)
 
-  let get_tests ?(include_with_random_value=true) () =
+  let get_tests ?(include_with_random_value = true) () =
     let open Alcotest in
-    let l = if include_with_random_value then
-      [ test_case "with zero value" `Quick (repeat 1000 with_zero_value);
-        test_case "with random value" `Quick (repeat 1000 with_random_value) ]
-    else [test_case "with zero value" `Quick (repeat 1000 with_zero_value)]
+    let l =
+      if include_with_random_value then
+        [ test_case "with zero value" `Quick (repeat 1000 with_zero_value);
+          test_case "with random value" `Quick (repeat 1000 with_random_value)
+        ]
+      else [test_case "with zero value" `Quick (repeat 1000 with_zero_value)]
     in
-    ( Printf.sprintf "is zero for Ff order %s" (Z.to_string FiniteField.order), l)
+    (Printf.sprintf "is zero for Ff order %s" (Z.to_string FiniteField.order), l)
 end
 
 module MakeEquality (FiniteField : Ff.T) = struct
@@ -236,8 +240,10 @@ module MakeFieldProperties (FiniteField : Ff.T) = struct
 
   let pow_to_order_equals_one () =
     let e = FiniteField.random () in
+    print_endline (Bytes.to_string (FiniteField.to_bytes e)) ;
+    print_endline (Z.to_string FiniteField.order) ;
     let pow_result = FiniteField.pow e FiniteField.order in
-    print_endline (Bytes.to_string (FiniteField.to_bytes pow_result));
+    print_endline (Bytes.to_string (FiniteField.to_bytes pow_result)) ;
     assert (FiniteField.is_one pow_result)
 
   let pow_addition_property () =
@@ -251,7 +257,9 @@ module MakeFieldProperties (FiniteField : Ff.T) = struct
 
   let get_tests () =
     let open Alcotest in
-    ( Printf.sprintf "Field properties for finite field of order %s" (Z.to_string (FiniteField.order)),
+    ( Printf.sprintf
+        "Field properties for finite field of order %s"
+        (Z.to_string FiniteField.order),
       [ test_case "zero_nullifier_one" `Quick (repeat 1000 zero_nullifier_one);
         test_case "zero_nullifier_zero" `Quick (repeat 1000 zero_nullifier_zero);
         test_case

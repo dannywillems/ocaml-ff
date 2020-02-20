@@ -97,8 +97,9 @@ end) : T = struct
     if Z.equal n Z.zero then one ()
     else if Z.equal n Z.one then g
     else
+      let n = Z.rem n order in
       let (a, r) = Z.div_rem n two_z in
       let acc = pow g a in
       let acc_square = mul acc acc in
-      if Z.equal r Z.zero then Z.rem acc_square order else mul acc_square g
+      if Z.equal r Z.zero then acc_square else mul acc_square g
 end
