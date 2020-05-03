@@ -4,10 +4,6 @@ module type T = sig
 
   val order : Z.t
 
-  val of_bytes : Bytes.t -> t
-
-  val to_bytes : t -> Bytes.t
-
   (** Create an empty value to store an element of the field. DO NOT USE THIS TO
       DO COMPUTATIONS WITH, UNDEFINED BEHAVIORS MAY HAPPEN. USE IT AS A BUFFER *)
   val empty : unit -> t
@@ -51,10 +47,6 @@ end) : T = struct
 
   let order = S.order
 
-  let of_bytes b = Z.of_string (Bytes.to_string b)
-
-  let to_bytes b = Bytes.of_string (Z.to_string b)
-
   (** Create an empty value to store an element of the field. DO NOT USE THIS TO
       DO COMPUTATIONS WITH, UNDEFINED BEHAVIORS MAY HAPPEN. USE IT AS A BUFFER *)
   let empty () = Z.zero
@@ -93,13 +85,16 @@ end) : T = struct
 
   let two_z = Z.succ Z.one
 
-  let rec pow g n =
+  let rec pow x n =
+    Printf.printf "n = %s\n" (Z.to_string n);
     if Z.equal n Z.zero then one ()
-    else if Z.equal n Z.one then g
+    else if is_zero x then zero ()
+    else if Z.equal n Z.one then x
     else
-      let n = Z.rem n order in
-      let (a, r) = Z.div_rem n two_z in
-      let acc = pow g a in
+      let n = Z.erem n (Z.pred order) in
+      let (a, r) = Z.ediv_rem n two_z in
+      Printf.printf "a = %s -- r = %s\n" (Z.to_string a) (Z.to_string r);
+      let acc = pow x a in
       let acc_square = mul acc acc in
-      if Z.equal r Z.zero then acc_square else mul acc_square g
+      if Z.equal r Z.zero then acc_square else mul acc_square x
 end

@@ -20,12 +20,12 @@ module FF1073740201FieldProperties =
 let () =
   let open Alcotest in
   run
-    "F13"
-    [ F13IsZero.get_tests ~include_with_random_value:false ();
+    "Random fields"
+    [ F13IsZero.get_tests ();
       F13ValueGeneration.get_tests ();
       F13Equality.get_tests ();
       F13FieldProperties.get_tests ();
-      FF1073740201IsZero.get_tests ~include_with_random_value:false ();
+      FF1073740201IsZero.get_tests ();
       FF1073740201ValueGeneration.get_tests ();
       FF1073740201Equality.get_tests ();
       FF1073740201FieldProperties.get_tests () ]

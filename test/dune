@@ -1,19 +1,5 @@
-(library
- (name Test_ff_make)
- (public_name test-ff-make)
- (modules Test_ff_make)
- (libraries alcotest ff)
+(tests
+ (names test_generic_ff)
+ (modules test_generic_ff test_ff_make)
+ (libraries ff alcotest)
 )
-
-(executable
- (name test_generic_ff)
- (modules test_generic_ff)
- (libraries ff test-ff-make alcotest))
-
-(alias
- (name    runtest-test-generic-ff)
- (action  (run %{exe:test_generic_ff.exe})))
-
-(alias
- (name    runtest)
- (deps    (alias runtest-test-generic-ff)))
