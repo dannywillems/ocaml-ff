@@ -4,9 +4,9 @@ module type T = sig
 
   val order : Z.t
 
+  val empty : unit -> t
   (** Create an empty value to store an element of the field. DO NOT USE THIS TO
       DO COMPUTATIONS WITH, UNDEFINED BEHAVIORS MAY HAPPEN. USE IT AS A BUFFER *)
-  val empty : unit -> t
 
   (* Let's use a function for the moment *)
   val zero : unit -> t
@@ -86,15 +86,24 @@ end) : T = struct
   let two_z = Z.succ Z.one
 
   let rec pow x n =
-    Printf.printf "n = %s\n" (Z.to_string n);
     if Z.equal n Z.zero then one ()
     else if is_zero x then zero ()
     else if Z.equal n Z.one then x
     else
       let n = Z.erem n (Z.pred order) in
       let (a, r) = Z.ediv_rem n two_z in
-      Printf.printf "a = %s -- r = %s\n" (Z.to_string a) (Z.to_string r);
       let acc = pow x a in
       let acc_square = mul acc acc in
       if Z.equal r Z.zero then acc_square else mul acc_square x
 end
+
+module MakeFp (S : sig
+  val p : Z.t
+
+  val n : int
+end) =
+Make (struct
+  let order =
+    assert (S.n >= 0) ;
+    Z.pow S.p S.n
+end)
