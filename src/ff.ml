@@ -41,26 +41,26 @@ module Make (S : sig
 end) : T = struct
   type t = Z.t
 
-  let order = S.order
+  let order = assert (S.order >= Z.of_string "2"); S.order
 
   (* Let's use a function for the moment *)
   let zero () = Z.zero
 
   let one () = Z.one
 
-  let is_zero s = Z.equal (Z.rem s order) Z.zero
+  let is_zero s = Z.equal (Z.erem s order) Z.zero
 
-  let is_one s = Z.equal (Z.rem s order) Z.one
+  let is_one s = Z.equal (Z.erem s order) Z.one
 
   let random () =
     let r = Random.int (Z.to_int S.order) in
     Z.of_int r
 
-  let add a b = Z.rem (Z.add a b) order
+  let add a b = Z.erem (Z.add a b) order
 
-  let mul a b = Z.rem (Z.mul a b) order
+  let mul a b = Z.erem (Z.mul a b) order
 
-  let eq a b = Z.equal (Z.rem a order) (Z.rem b order)
+  let eq a b = Z.equal (Z.erem a order) (Z.erem b order)
 
   let negate a = Z.min order (Z.rem a order)
 
