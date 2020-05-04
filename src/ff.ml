@@ -41,7 +41,9 @@ module Make (S : sig
 end) : T = struct
   type t = Z.t
 
-  let order = assert (S.order >= Z.of_string "2"); S.order
+  let order =
+    assert (S.order >= Z.of_string "2") ;
+    S.order
 
   (* Let's use a function for the moment *)
   let zero () = Z.zero
