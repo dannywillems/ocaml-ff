@@ -4,10 +4,6 @@ module type T = sig
 
   val order : Z.t
 
-  val empty : unit -> t
-  (** Create an empty value to store an element of the field. DO NOT USE THIS TO
-      DO COMPUTATIONS WITH, UNDEFINED BEHAVIORS MAY HAPPEN. USE IT AS A BUFFER *)
-
   (* Let's use a function for the moment *)
   val zero : unit -> t
 
@@ -46,10 +42,6 @@ end) : T = struct
   type t = Z.t
 
   let order = S.order
-
-  (** Create an empty value to store an element of the field. DO NOT USE THIS TO
-      DO COMPUTATIONS WITH, UNDEFINED BEHAVIORS MAY HAPPEN. USE IT AS A BUFFER *)
-  let empty () = Z.zero
 
   (* Let's use a function for the moment *)
   let zero () = Z.zero
