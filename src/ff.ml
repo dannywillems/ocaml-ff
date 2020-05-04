@@ -98,6 +98,6 @@ module MakeFp (S : sig
 end) =
 Make (struct
   let order =
-    assert (S.n >= 0) ;
+    assert (S.n > 0) ;
     Z.pow S.p S.n
 end)
