@@ -4,7 +4,6 @@ module type T = sig
 
   val order : Z.t
 
-  (* Let's use a function for the moment *)
   val zero : unit -> t
 
   val one : unit -> t
