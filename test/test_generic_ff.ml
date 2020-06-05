@@ -1,9 +1,9 @@
-module F13 = Ff.Make (struct
-  let order = Z.of_string "13"
+module F13 = Ff.MakeFp (struct
+  let prime_order = Z.of_string "13"
 end)
 
-module F10000004089 = Ff.Make (struct
-  let order = Z.of_string "1073740201"
+module F10000004089 = Ff.MakeFp (struct
+  let prime_order = Z.of_string "1073740201"
 end)
 
 module F13ValueGeneration = Test_ff_make.MakeValueGeneration (F13)

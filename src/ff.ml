@@ -35,14 +35,14 @@ module type T = sig
   val pow : t -> Z.t -> t
 end
 
-module Make (S : sig
-  val order : Z.t
+module MakeFp (S : sig
+  val prime_order : Z.t
 end) : T = struct
   type t = Z.t
 
   let order =
-    assert (S.order >= Z.of_string "2") ;
-    S.order
+    assert (S.prime_order >= Z.of_string "2") ;
+    S.prime_order
 
   (* Let's use a function for the moment *)
   let zero () = Z.zero
@@ -54,7 +54,7 @@ end) : T = struct
   let is_one s = Z.equal (Z.erem s order) Z.one
 
   let random () =
-    let r = Random.int (Z.to_int S.order) in
+    let r = Random.int (Z.to_int order) in
     Z.of_int r
 
   let add a b = Z.erem (Z.add a b) order
@@ -89,14 +89,3 @@ end) : T = struct
       let acc_square = mul acc acc in
       if Z.equal r Z.zero then acc_square else mul acc_square x
 end
-
-module MakeFp (S : sig
-  val p : Z.t
-
-  val n : int
-end) =
-Make (struct
-  let order =
-    assert (S.n > 0) ;
-    Z.pow S.p S.n
-end)
