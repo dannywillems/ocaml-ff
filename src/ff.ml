@@ -33,6 +33,10 @@ module type T = sig
   val double : t -> t
 
   val pow : t -> Z.t -> t
+
+  val of_string : string -> t
+
+  val to_string : t -> string
 end
 
 module MakeFp (S : sig
@@ -88,4 +92,8 @@ end) : T = struct
       let acc = pow x a in
       let acc_square = mul acc acc in
       if Z.equal r Z.zero then acc_square else mul acc_square x
+
+  let of_string s = Z.of_string s
+
+  let to_string s = Z.to_string s
 end
