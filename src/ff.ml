@@ -93,7 +93,7 @@ end) : T = struct
       let acc_square = mul acc acc in
       if Z.equal r Z.zero then acc_square else mul acc_square x
 
-  let of_string s = Z.of_string s
+  let of_string s = Z.erem (Z.of_string s) order
 
   let to_string s = Z.to_string s
 end
