@@ -4,6 +4,9 @@ module type T = sig
 
   val order : Z.t
 
+  (** minimal number of bytes required to encode a value of the field. *)
+  val size_in_bytes : int
+
   val zero : unit -> t
 
   val one : unit -> t
@@ -65,6 +68,10 @@ end) : T = struct
   let order =
     assert (S.prime_order >= Z.of_string "2") ;
     S.prime_order
+
+  let log256 n = log n /. log 256.
+
+  let size_in_bytes = int_of_float (log256 (Z.to_float order)) + 1
 
   (* Let's use a function for the moment *)
   let zero () = Z.zero
