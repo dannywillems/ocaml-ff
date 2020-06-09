@@ -34,9 +34,27 @@ module type T = sig
 
   val pow : t -> Z.t -> t
 
+  (** Create a value t from a predefined string representation. It is not
+      required that to_string of_string t = t. By default, decimal
+      representation of the number is used, modulo the order of the field *)
   val of_string : string -> t
 
+  (** String representation of a value t. It is not required that to_string
+      of_string t = t. By default, decimal representation of the number is
+      used *)
   val to_string : t -> string
+
+  (** From a predefined bytes representation, construct a value t. It is not
+      required that to_bytes of_bytes t = t. By default, little endian encoding
+      is used and the given element is modulo the prime order *)
+  val of_bytes : Bytes.t -> t
+
+  (** Convert the value t to a bytes representation which can be used for
+      hashing for instance. It is not required that to_bytes of_bytes t = t. By
+      default, little endian encoding is used, and length of the resulting bytes
+      may vary depending on the order.
+  *)
+  val to_bytes : t -> Bytes.t
 end
 
 module MakeFp (S : sig
@@ -93,7 +111,15 @@ end) : T = struct
       let acc_square = mul acc acc in
       if Z.equal r Z.zero then acc_square else mul acc_square x
 
+  (* Decimal representation by default *)
   let of_string s = Z.erem (Z.of_string s) order
 
+  (* Decimal representation by default *)
   let to_string s = Z.to_string s
+
+  (* Bytes must be in little endian *)
+  let of_bytes s = Z.erem (Z.of_bits (Bytes.to_string s)) order
+
+  (* Little endian representation *)
+  let to_bytes s = Bytes.of_string (Z.to_bits s)
 end
