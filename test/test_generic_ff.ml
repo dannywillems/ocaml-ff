@@ -17,6 +17,17 @@ module FF1073740201Equality = Test_ff_make.MakeEquality (F1073740201)
 module FF1073740201FieldProperties =
   Test_ff_make.MakeFieldProperties (F1073740201)
 
+module FFLong = Ff.MakeFp (struct
+  let prime_order =
+    Z.of_string
+      "4002409555221667393417789825735904156556882819939007885332058136124031650490837864442687629129015664037894272559787"
+end)
+
+module FFLongValueGeneration = Test_ff_make.MakeValueGeneration (FFLong)
+module FFLongIsZero = Test_ff_make.MakeIsZero (FFLong)
+module FFLongEquality = Test_ff_make.MakeEquality (FFLong)
+module FFLongFieldProperties = Test_ff_make.MakeFieldProperties (FFLong)
+
 let test_size_in_bytes () =
   let open Alcotest in
   ( "Test size in bytes computation for different orders",
@@ -53,4 +64,8 @@ let () =
       FF1073740201ValueGeneration.get_tests ();
       FF1073740201Equality.get_tests ();
       FF1073740201FieldProperties.get_tests ();
+      FFLongIsZero.get_tests ();
+      FFLongValueGeneration.get_tests ();
+      FFLongEquality.get_tests ();
+      FFLongFieldProperties.get_tests ();
       test_size_in_bytes () ]
