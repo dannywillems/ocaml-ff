@@ -67,7 +67,7 @@ end) : T = struct
 
   let eq a b = Z.equal (Z.erem a order) (Z.erem b order)
 
-  let negate a = Z.min order (Z.rem a order)
+  let negate a = Z.sub order a
 
   (* Unsafe version of inverse *)
   let inverse a = Z.invert a order
