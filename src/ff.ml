@@ -76,6 +76,7 @@ end) : T = struct
   let is_one s = Z.equal (Z.erem s order) Z.one
 
   let random () =
+    Random.self_init ();
     let r = Random.int (Z.to_int order) in
     Z.of_int r
 
