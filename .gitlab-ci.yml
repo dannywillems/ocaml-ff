@@ -6,6 +6,12 @@
     - eval $(opam env)
     - opam update
     - opam depext -i -y zarith
+    # Install NVM for the JS test
+    - curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.35.3/install.sh | bash
+    - export NVM_DIR="$HOME/.nvm"
+    - . "$NVM_DIR/nvm.sh"
+    - nvm install 12.16.1
+    - nvm use 12.16.1
   script:
     - opam install --deps-only --with-test -y .
     # Install the package
@@ -16,6 +22,12 @@
     - opam install ocamlformat.0.14.1 -y
     - ocamlformat --check src/*.ml*
     - ocamlformat --check test/*.ml*
+    - ocamlformat --check js/*.ml*
+    # js_of_ocaml compatibility
+    - opam install js_of_ocaml js_of_ocaml-compiler js_of_ocaml-ppx zarith_stubs_js
+    - dune build js
+    - cp _build/default/js/FiniteField.js js/test
+    - node js/test/test_js.js
  
 stages:
   - build
