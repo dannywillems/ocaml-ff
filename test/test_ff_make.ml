@@ -158,6 +158,15 @@ module MakeFieldProperties (FiniteField : Ff.T) = struct
     let one = FiniteField.one () in
     assert (FiniteField.is_zero (FiniteField.mul zero one))
 
+  let rec inverse_property () =
+    let random = FiniteField.random () in
+    if FiniteField.is_zero random then inverse_property ()
+    else
+      assert (
+        FiniteField.eq
+          (FiniteField.mul (FiniteField.inverse random) random)
+          (FiniteField.one ()) )
+
   let inverse_of_one_is_one () =
     let one = FiniteField.one () in
     assert (FiniteField.eq (FiniteField.inverse one) one)
@@ -183,6 +192,13 @@ module MakeFieldProperties (FiniteField : Ff.T) = struct
       assert (
         FiniteField.eq (FiniteField.inverse (FiniteField.inverse random)) random
       )
+
+  let opposite_property () =
+    let random = FiniteField.random () in
+    assert (
+      FiniteField.eq
+        (FiniteField.add (FiniteField.negate random) random)
+        (FiniteField.zero ()) )
 
   let opposite_of_opposite () =
     let random = FiniteField.random () in
@@ -361,6 +377,8 @@ module MakeFieldProperties (FiniteField : Ff.T) = struct
           "pow to negative exponent"
           `Quick
           (repeat pow_to_negative_exponent);
+        test_case "opposite property" `Quick (repeat opposite_property);
+        test_case "inverse property" `Quick (repeat inverse_property);
         test_case "pow addition property" `Quick (repeat pow_addition_property);
         test_case
           "multiplicative_associativity"
