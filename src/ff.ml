@@ -4,8 +4,8 @@ module type T = sig
 
   val order : Z.t
 
-  (** minimal number of bytes required to encode a value of the field. *)
   val size_in_bytes : int
+  (** minimal number of bytes required to encode a value of the field. *)
 
   val zero : unit -> t
 
@@ -37,33 +37,37 @@ module type T = sig
 
   val pow : t -> Z.t -> t
 
+  val of_string : string -> t
   (** Create a value t from a predefined string representation. It is not
       required that to_string of_string t = t. By default, decimal
       representation of the number is used, modulo the order of the field *)
-  val of_string : string -> t
 
+  val to_string : t -> string
   (** String representation of a value t. It is not required that to_string
       of_string t = t. By default, decimal representation of the number is
       used *)
-  val to_string : t -> string
 
+  val of_bytes : Bytes.t -> t
   (** From a predefined bytes representation, construct a value t. It is not
       required that to_bytes of_bytes t = t. By default, little endian encoding
       is used and the given element is modulo the prime order *)
-  val of_bytes : Bytes.t -> t
 
+  val to_bytes : t -> Bytes.t
   (** Convert the value t to a bytes representation which can be used for
       hashing for instance. It is not required that to_bytes of_bytes t = t. By
       default, little endian encoding is used, and length of the resulting bytes
       may vary depending on the order.
   *)
-  val to_bytes : t -> Bytes.t
 
-  (** Returns a nth root of unity *)
   val get_nth_root_of_unity : Z.t -> t
+  (** Returns a nth root of unity *)
 
-  (** [is_nth_root_of_unity n x] returns [true] if [x] is a nth-root of unity*)
   val is_nth_root_of_unity : Z.t -> t -> bool
+  (** [is_nth_root_of_unity n x] returns [true] if [x] is a nth-root of unity*)
+
+  val of_z : Z.t -> t
+
+  val to_z : t -> Z.t
 end
 
 module MakeFp (S : sig
@@ -154,4 +158,8 @@ end) : T = struct
     else
       (not (eq x (zero ())))
       && eq (pow (pow x (Z.div (Z.pred order) n)) n) (one ())
+
+  let to_z t = t
+
+  let of_z t = Z.erem t order
 end
