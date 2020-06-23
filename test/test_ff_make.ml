@@ -385,3 +385,29 @@ module MakeFieldProperties (FiniteField : Ff.T) = struct
           `Quick
           (repeat multiplicative_associativity) ] )
 end
+
+module MakeMemoryRepresentation (FiniteField : Ff.T) = struct
+  let test_to_bytes_has_correct_size () =
+    let x = FiniteField.random () in
+    let x_bytes = FiniteField.to_bytes x in
+    assert (Bytes.length x_bytes = FiniteField.size_in_bytes)
+
+  let test_to_bytes_of_bytes_inverse () =
+    let x = FiniteField.random () in
+    let x_bytes = FiniteField.to_bytes x in
+    assert (FiniteField.eq x (FiniteField.of_bytes x_bytes))
+
+  let get_tests () =
+    let open Alcotest in
+    ( Printf.sprintf
+        "Memory representation for field of order %s"
+        (Z.to_string FiniteField.order),
+      [ test_case
+          "to_bytes returns the correct number of bytes"
+          `Quick
+          (repeat test_to_bytes_has_correct_size);
+        test_case
+          "to_bytes and of bytes are inverses"
+          `Quick
+          (repeat test_to_bytes_of_bytes_inverse) ] )
+end

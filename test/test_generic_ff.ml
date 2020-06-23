@@ -27,6 +27,7 @@ module FFLongValueGeneration = Test_ff_make.MakeValueGeneration (FFLong)
 module FFLongIsZero = Test_ff_make.MakeIsZero (FFLong)
 module FFLongEquality = Test_ff_make.MakeEquality (FFLong)
 module FFLongFieldProperties = Test_ff_make.MakeFieldProperties (FFLong)
+module FFMemoryRepresentation = Test_ff_make.MakeMemoryRepresentation (FFLong)
 
 let test_size_in_bytes () =
   let open Alcotest in
@@ -48,7 +49,6 @@ let test_size_in_bytes () =
               let module P = Ff.MakeFp (struct
                 let prime_order = Z.of_string order
               end) in
-              print_int P.size_in_bytes ;
               assert (P.size_in_bytes = expected_nb_bytes))
             l) ] )
 
@@ -68,4 +68,5 @@ let () =
       FFLongValueGeneration.get_tests ();
       FFLongEquality.get_tests ();
       FFLongFieldProperties.get_tests ();
+      FFMemoryRepresentation.get_tests ();
       test_size_in_bytes () ]
