@@ -7,9 +7,9 @@ module type T = sig
   val size_in_bytes : int
   (** minimal number of bytes required to encode a value of the field. *)
 
-  val zero : unit -> t
+  val zero : t
 
-  val one : unit -> t
+  val one : t
 
   val is_zero : t -> bool
 
@@ -84,9 +84,9 @@ end) : T = struct
   let size_in_bytes = int_of_float (log256 (Z.to_float order)) + 1
 
   (* Let's use a function for the moment *)
-  let zero () = Z.zero
+  let zero = Z.zero
 
-  let one () = Z.one
+  let one = Z.one
 
   let is_zero s = Z.equal (Z.erem s order) Z.zero
 
@@ -119,8 +119,8 @@ end) : T = struct
   let two_z = Z.succ Z.one
 
   let rec pow x n =
-    if Z.equal n Z.zero then one ()
-    else if is_zero x then zero ()
+    if Z.equal n Z.zero then one
+    else if is_zero x then zero
     else if Z.equal n Z.one then x
     else
       let n = Z.erem n (Z.pred order) in
@@ -151,18 +151,14 @@ end) : T = struct
       failwith "n must divide the order of the multiplicate group"
     else
       let r = random () in
-      if
-        (not (eq r (zero ())))
-        && eq (pow (pow r (Z.div (Z.pred order) n)) n) (one ())
+      if (not (eq r zero)) && eq (pow (pow r (Z.div (Z.pred order) n)) n) one
       then r
       else get_nth_root_of_unity n
 
   let is_nth_root_of_unity n x =
     if not (Z.equal (Z.erem (Z.pred order) n) Z.zero) then
       failwith "n must divide the order of the multiplicate group"
-    else
-      (not (eq x (zero ())))
-      && eq (pow (pow x (Z.div (Z.pred order) n)) n) (one ())
+    else (not (eq x zero)) && eq (pow (pow x (Z.div (Z.pred order) n)) n) one
 
   let to_z t = t
 
