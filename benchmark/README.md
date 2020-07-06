@@ -15,6 +15,6 @@ let () =
 ### Run the benches
 
 ```shell
-opam install core_bench
+opam install core_bench.v0.12.0
 dune exec benchmark/bench_ff.exe
 ```

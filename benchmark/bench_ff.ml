@@ -5,15 +5,15 @@ module FFBenchmark (F : Ff.T) = struct
 
   let e2 = F.random ()
 
-  let zero = F.zero ()
+  let zero = F.zero
 
-  let one = F.one ()
+  let one = F.one
 
   let generate_random_element () = ignore @@ F.random ()
 
-  let generate_zero () = ignore @@ F.zero ()
+  let generate_zero () = ignore @@ F.zero
 
-  let generate_one () = ignore @@ F.one ()
+  let generate_one () = ignore @@ F.one
 
   let e1_bytes = F.to_bytes e1
 

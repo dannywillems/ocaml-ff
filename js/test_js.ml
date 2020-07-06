@@ -11,9 +11,9 @@ let _ =
 
        method mul x y = Fp.mul x y
 
-       method zero = Fp.zero ()
+       method zero = Fp.zero
 
-       method one = Fp.one ()
+       method one = Fp.one
 
        method random = Fp.random ()
 
