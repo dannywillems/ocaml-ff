@@ -17,9 +17,9 @@ module MakeValueGeneration (FiniteField : Ff.T) = struct
   let rec inverse_with_random_not_null () =
     let random = FiniteField.random () in
     if FiniteField.is_zero random then inverse_with_random_not_null ()
-    else ignore @@ FiniteField.inverse random
+    else ignore @@ FiniteField.inverse_exn random
 
-  let inverse_with_one () = ignore @@ FiniteField.inverse FiniteField.one
+  let inverse_with_one () = ignore @@ FiniteField.inverse_exn FiniteField.one
 
   let negation_with_random () =
     let random = FiniteField.random () in
@@ -133,11 +133,13 @@ module MakeFieldProperties (FiniteField : Ff.T) = struct
     else
       assert (
         FiniteField.eq
-          (FiniteField.mul (FiniteField.inverse random) random)
+          (FiniteField.mul (FiniteField.inverse_exn random) random)
           FiniteField.one )
 
   let inverse_of_one_is_one () =
-    assert (FiniteField.eq (FiniteField.inverse FiniteField.one) FiniteField.one)
+    assert (
+      FiniteField.eq (FiniteField.inverse_exn FiniteField.one) FiniteField.one
+    )
 
   let zero_has_no_inverse () =
     match FiniteField.inverse_opt FiniteField.zero with
@@ -157,8 +159,9 @@ module MakeFieldProperties (FiniteField : Ff.T) = struct
     if FiniteField.is_zero random then inverse_of_inverse ()
     else
       assert (
-        FiniteField.eq (FiniteField.inverse (FiniteField.inverse random)) random
-      )
+        FiniteField.eq
+          (FiniteField.inverse_exn (FiniteField.inverse_exn random))
+          random )
 
   let opposite_property () =
     let random = FiniteField.random () in

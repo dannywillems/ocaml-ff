@@ -52,9 +52,11 @@ module FFBenchmark (F : Ff.T) = struct
 
   let compute_opposite_on_pregenerated_zero_element () = ignore @@ F.negate zero
 
-  let compute_inverse_on_pregenerated_random_element () = ignore @@ F.inverse e1
+  let compute_inverse_on_pregenerated_random_element () =
+    ignore @@ F.inverse_exn e1
 
-  let compute_inverse_on_pregenerated_one_element () = ignore @@ F.inverse one
+  let compute_inverse_on_pregenerated_one_element () =
+    ignore @@ F.inverse_exn one
 
   let compute_inverse_opt_on_pregenerated_random_element () =
     ignore @@ F.inverse_opt e1

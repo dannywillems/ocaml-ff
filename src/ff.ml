@@ -3,39 +3,80 @@ module type T = sig
   type t
 
   val order : Z.t
+  (** The order of the finite field *)
 
   val size_in_bytes : int
   (** minimal number of bytes required to encode a value of the field. *)
 
   val zero : t
+  (** The neutral element for the addition *)
 
   val one : t
+  (** The neutral element for the multiplication *)
 
   val is_zero : t -> bool
+  (** [is_zero x] returns [true] if [x] is the neutral element for the addition *)
 
   val is_one : t -> bool
+  (** [is_one x] returns [true] if [x] is the neutral element for the multiplication *)
 
   val random : unit -> t
+  (** [random ()] returns a random element of the field *)
 
   val add : t -> t -> t
+  (** [add a b] returns [a + b mod order] *)
+
+  val ( + ) : t -> t -> t
+  (** Infix operator for [add] *)
 
   val mul : t -> t -> t
+  (** [mul a b] returns [a * b mod order] *)
+
+  val ( * ) : t -> t -> t
+  (** Infix operator for [mul] *)
 
   val eq : t -> t -> bool
+  (** [eq a b] returns [true] if [a = b mod order], else [false] *)
+
+  val ( = ) : t -> t -> bool
+  (** Infix operator for [eq] *)
 
   val negate : t -> t
+  (** [negate x] returns [-x mod order]. Equivalently, [negate x] returns the
+      unique [y] such that [x + y mod order = 0]
+  *)
 
-  (* Unsafe version of inverse *)
-  val inverse : t -> t
+  val ( - ) : t -> t
+  (** Infix operator for [negate] *)
 
-  (* Safe version of inverse *)
+  val inverse_exn : t -> t
+  (** [inverse_exn x] returns [x^-1] if [x] is not [0], else raise
+      [Division_by_zero]
+  *)
+
   val inverse_opt : t -> t option
+  (** [inverse_opt x] returns [x^-1] if [x] is not [0] as an option, else [None] *)
+
+  val div_exn : t -> t -> t
+  (** [div_exn a b] returns [a * b^-1]. Raise [Division_by_zero] if [b = zero] *)
+
+  val div_opt : t -> t -> t option
+  (** [div_opt a b] returns [a * b^-1] as an option. Return [None] if [b = zero] *)
+
+  val ( / ) : t -> t -> t
+  (** Infix operator for [div_exn] *)
 
   val square : t -> t
+  (** [square x] returns [x^2] *)
 
   val double : t -> t
+  (** [double x] returns [2x] *)
 
   val pow : t -> Z.t -> t
+  (** [pow x n] returns [x^n] *)
+
+  val ( ** ) : t -> Z.t -> t
+  (** Infix operator for [pow] *)
 
   val of_string : string -> t
   (** Create a value t from a predefined string representation. It is not
@@ -66,8 +107,13 @@ module type T = sig
   (** [is_nth_root_of_unity n x] returns [true] if [x] is a nth-root of unity*)
 
   val of_z : Z.t -> t
+  (** [of_z x] builds an element t from the Zarith element x. [mod order] is
+      applied if [x > order] *)
 
   val to_z : t -> Z.t
+  (** [to_z x] builds a Zarith element, using the decimal representation.
+      Arithmetic on the result can be done using the modular functions on
+      integer *)
 end
 
 module MakeFp (S : sig
@@ -99,18 +145,32 @@ end) : T = struct
 
   let add a b = Z.erem (Z.add a b) order
 
+  let ( + ) = add
+
   let mul a b = Z.erem (Z.mul a b) order
+
+  let ( * ) = mul
 
   let eq a b = Z.equal (Z.erem a order) (Z.erem b order)
 
+  let ( = ) = eq
+
   let negate a = Z.sub order a
 
-  (* Unsafe version of inverse *)
-  let inverse a = Z.invert a order
+  let ( - ) = negate
 
-  (* Safe version of inverse *)
+  let inverse_exn a =
+    if a = zero then raise Division_by_zero else Z.invert a order
+
   let inverse_opt a =
     try Some (Z.invert a order) with Division_by_zero -> None
+
+  let div_exn a b =
+    if b = zero then raise Division_by_zero else mul a (inverse_exn b)
+
+  let div_opt a b = if b = zero then None else Some (mul a (inverse_exn b))
+
+  let ( / ) = div_exn
 
   let square x = Z.mul x x
 
@@ -128,6 +188,8 @@ end) : T = struct
       let acc = pow x a in
       let acc_square = mul acc acc in
       if Z.equal r Z.zero then acc_square else mul acc_square x
+
+  let ( ** ) = pow
 
   (* Decimal representation by default *)
   let of_string s = Z.erem (Z.of_string s) order
