@@ -129,7 +129,6 @@ end) : T = struct
 
   let size_in_bytes = int_of_float (log256 (Z.to_float order)) + 1
 
-  (* Let's use a function for the moment *)
   let zero = Z.zero
 
   let one = Z.one
