@@ -203,7 +203,6 @@ end) : T = struct
   let to_bytes s =
     let b = Bytes.of_string (Z.to_bits s) in
     let res = Bytes.create size_in_bytes in
-    assert (Bytes.length b <= size_in_bytes) ;
     Bytes.blit b 0 res 0 (min (Bytes.length b) size_in_bytes) ;
     res
 
