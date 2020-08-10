@@ -23,6 +23,9 @@ module type T = sig
   val random : unit -> t
   (** [random ()] returns a random element of the field *)
 
+  val non_null_random : unit -> t
+  (** [non_null_random ()] returns a non null random element of the field *)
+
   val add : t -> t -> t
   (** [add a b] returns [a + b mod order] *)
 
@@ -141,6 +144,10 @@ end) : T = struct
     Random.self_init () ;
     let r = Bytes.init size_in_bytes (fun _ -> char_of_int (Random.int 256)) in
     Z.erem (Z.of_bits (Bytes.to_string r)) order
+
+  let rec non_null_random () =
+    let r = random () in
+    if is_zero r then non_null_random () else r
 
   let add a b = Z.erem (Z.add a b) order
 
