@@ -12,12 +12,14 @@ module MakeValueGeneration (FiniteField : Ff.T) = struct
 
   let random () = ignore @@ FiniteField.random ()
 
+  let non_null_random () =
+    ignore @@ not (FiniteField.is_zero (FiniteField.non_null_random ()))
+
   let one () = ignore @@ FiniteField.one
 
-  let rec inverse_with_random_not_null () =
-    let random = FiniteField.random () in
-    if FiniteField.is_zero random then inverse_with_random_not_null ()
-    else ignore @@ FiniteField.inverse_exn random
+  let inverse_with_random_not_null () =
+    let r = FiniteField.non_null_random () in
+    ignore @@ FiniteField.inverse_exn r
 
   let inverse_with_one () = ignore @@ FiniteField.inverse_exn FiniteField.one
 
@@ -54,6 +56,7 @@ module MakeValueGeneration (FiniteField : Ff.T) = struct
         (Z.to_string FiniteField.order),
       [ test_case "zero" `Quick (repeat zero);
         test_case "random" `Quick (repeat random);
+        test_case "non null random" `Quick (repeat ~n:100 non_null_random);
         test_case
           "inverse_random_not_null"
           `Quick
