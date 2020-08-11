@@ -20,10 +20,10 @@ module type T = sig
   val is_one : t -> bool
   (** [is_one x] returns [true] if [x] is the neutral element for the multiplication *)
 
-  val random : unit -> t
+  val random : ?state:Random.State.t -> unit -> t
   (** [random ()] returns a random element of the field *)
 
-  val non_null_random : unit -> t
+  val non_null_random : ?state:Random.State.t -> unit -> t
   (** [non_null_random ()] returns a non null random element of the field *)
 
   val add : t -> t -> t
@@ -140,14 +140,25 @@ end) : T = struct
 
   let is_one s = Z.equal (Z.erem s order) Z.one
 
-  let random () =
-    Random.self_init () ;
+  let random ?state () =
+    ( match state with
+    | None -> Random.self_init ()
+    | Some s -> Random.set_state s ) ;
     let r = Bytes.init size_in_bytes (fun _ -> char_of_int (Random.int 256)) in
     Z.erem (Z.of_bits (Bytes.to_string r)) order
 
-  let rec non_null_random () =
-    let r = random () in
-    if is_zero r then non_null_random () else r
+  let non_null_random ?state () =
+    ( match state with
+    | None -> Random.self_init ()
+    | Some s -> Random.set_state s ) ;
+    let rec aux () =
+      let r =
+        Bytes.init size_in_bytes (fun _ -> char_of_int (Random.int 256))
+      in
+      let r = Z.erem (Z.of_bits (Bytes.to_string r)) order in
+      if is_zero r then aux () else r
+    in
+    aux ()
 
   let add a b = Z.erem (Z.add a b) order
 
