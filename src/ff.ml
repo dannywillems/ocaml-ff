@@ -220,7 +220,7 @@ end) : T = struct
   (* Little endian representation *)
   let to_bytes s =
     let b = Bytes.of_string (Z.to_bits s) in
-    let res = Bytes.create size_in_bytes in
+    let res = Bytes.make size_in_bytes '\000' in
     Bytes.blit b 0 res 0 (min (Bytes.length b) size_in_bytes) ;
     res
 
