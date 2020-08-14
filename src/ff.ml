@@ -21,10 +21,14 @@ module type T = sig
   (** [is_one x] returns [true] if [x] is the neutral element for the multiplication *)
 
   val random : ?state:Random.State.t -> unit -> t
-  (** [random ()] returns a random element of the field *)
+  (** [random ()] returns a random element of the field. A state for the PRNG
+      can be given to initialize the PRNG in the requested state. If no state is
+      given, no initialisation is performed *)
 
   val non_null_random : ?state:Random.State.t -> unit -> t
-  (** [non_null_random ()] returns a non null random element of the field *)
+  (** [non_null_random ()] returns a non null random element of the field.
+      A state for the PRNG can be given to initialize the PRNG in the requested
+      state. If no state is given, no initialisation is performed *)
 
   val add : t -> t -> t
   (** [add a b] returns [a + b mod order] *)
@@ -141,21 +145,14 @@ end) : T = struct
   let is_one s = Z.equal (Z.erem s order) Z.one
 
   let random ?state () =
-    ( match state with
-    | None -> Random.self_init ()
-    | Some s -> Random.set_state s ) ;
+    (match state with None -> () | Some s -> Random.set_state s) ;
     let r = Bytes.init size_in_bytes (fun _ -> char_of_int (Random.int 256)) in
     Z.erem (Z.of_bits (Bytes.to_string r)) order
 
   let non_null_random ?state () =
-    ( match state with
-    | None -> Random.self_init ()
-    | Some s -> Random.set_state s ) ;
+    (match state with None -> () | Some s -> Random.set_state s) ;
     let rec aux () =
-      let r =
-        Bytes.init size_in_bytes (fun _ -> char_of_int (Random.int 256))
-      in
-      let r = Z.erem (Z.of_bits (Bytes.to_string r)) order in
+      let r = random () in
       if is_zero r then aux () else r
     in
     aux ()
