@@ -2,125 +2,125 @@
 module type T = sig
   type t
 
-  val order : Z.t
   (** The order of the finite field *)
+  val order : Z.t
 
-  val size_in_bytes : int
   (** minimal number of bytes required to encode a value of the field. *)
+  val size_in_bytes : int
 
-  val zero : t
   (** The neutral element for the addition *)
+  val zero : t
 
-  val one : t
   (** The neutral element for the multiplication *)
+  val one : t
 
-  val is_zero : t -> bool
   (** [is_zero x] returns [true] if [x] is the neutral element for the addition *)
+  val is_zero : t -> bool
 
-  val is_one : t -> bool
   (** [is_one x] returns [true] if [x] is the neutral element for the multiplication *)
+  val is_one : t -> bool
 
-  val random : ?state:Random.State.t -> unit -> t
   (** [random ()] returns a random element of the field. A state for the PRNG
       can be given to initialize the PRNG in the requested state. If no state is
       given, no initialisation is performed *)
+  val random : ?state:Random.State.t -> unit -> t
 
-  val non_null_random : ?state:Random.State.t -> unit -> t
   (** [non_null_random ()] returns a non null random element of the field.
       A state for the PRNG can be given to initialize the PRNG in the requested
       state. If no state is given, no initialisation is performed *)
+  val non_null_random : ?state:Random.State.t -> unit -> t
 
-  val add : t -> t -> t
   (** [add a b] returns [a + b mod order] *)
+  val add : t -> t -> t
 
-  val ( + ) : t -> t -> t
   (** Infix operator for [add] *)
+  val ( + ) : t -> t -> t
 
-  val mul : t -> t -> t
   (** [mul a b] returns [a * b mod order] *)
+  val mul : t -> t -> t
 
-  val ( * ) : t -> t -> t
   (** Infix operator for [mul] *)
+  val ( * ) : t -> t -> t
 
-  val eq : t -> t -> bool
   (** [eq a b] returns [true] if [a = b mod order], else [false] *)
+  val eq : t -> t -> bool
 
-  val ( = ) : t -> t -> bool
   (** Infix operator for [eq] *)
+  val ( = ) : t -> t -> bool
 
-  val negate : t -> t
   (** [negate x] returns [-x mod order]. Equivalently, [negate x] returns the
       unique [y] such that [x + y mod order = 0]
   *)
+  val negate : t -> t
 
-  val ( - ) : t -> t
   (** Infix operator for [negate] *)
+  val ( - ) : t -> t
 
-  val inverse_exn : t -> t
   (** [inverse_exn x] returns [x^-1] if [x] is not [0], else raise
       [Division_by_zero]
   *)
+  val inverse_exn : t -> t
 
-  val inverse_opt : t -> t option
   (** [inverse_opt x] returns [x^-1] if [x] is not [0] as an option, else [None] *)
+  val inverse_opt : t -> t option
 
-  val div_exn : t -> t -> t
   (** [div_exn a b] returns [a * b^-1]. Raise [Division_by_zero] if [b = zero] *)
+  val div_exn : t -> t -> t
 
-  val div_opt : t -> t -> t option
   (** [div_opt a b] returns [a * b^-1] as an option. Return [None] if [b = zero] *)
+  val div_opt : t -> t -> t option
 
-  val ( / ) : t -> t -> t
   (** Infix operator for [div_exn] *)
+  val ( / ) : t -> t -> t
 
-  val square : t -> t
   (** [square x] returns [x^2] *)
+  val square : t -> t
 
-  val double : t -> t
   (** [double x] returns [2x] *)
+  val double : t -> t
 
-  val pow : t -> Z.t -> t
   (** [pow x n] returns [x^n] *)
+  val pow : t -> Z.t -> t
 
-  val ( ** ) : t -> Z.t -> t
   (** Infix operator for [pow] *)
+  val ( ** ) : t -> Z.t -> t
 
-  val of_string : string -> t
   (** Create a value t from a predefined string representation. It is not
       required that to_string of_string t = t. By default, decimal
       representation of the number is used, modulo the order of the field *)
+  val of_string : string -> t
 
-  val to_string : t -> string
   (** String representation of a value t. It is not required that to_string
       of_string t = t. By default, decimal representation of the number is
       used *)
+  val to_string : t -> string
 
-  val of_bytes : Bytes.t -> t
   (** From a predefined bytes representation, construct a value t. It is not
       required that to_bytes of_bytes t = t. By default, little endian encoding
       is used and the given element is modulo the prime order *)
+  val of_bytes : Bytes.t -> t
 
-  val to_bytes : t -> Bytes.t
   (** Convert the value t to a bytes representation which can be used for
       hashing for instance. It is not required that to_bytes of_bytes t = t. By
       default, little endian encoding is used, and length of the resulting bytes
       may vary depending on the order.
   *)
+  val to_bytes : t -> Bytes.t
 
-  val get_nth_root_of_unity : Z.t -> t
   (** Returns a nth root of unity *)
+  val get_nth_root_of_unity : Z.t -> t
 
-  val is_nth_root_of_unity : Z.t -> t -> bool
   (** [is_nth_root_of_unity n x] returns [true] if [x] is a nth-root of unity*)
+  val is_nth_root_of_unity : Z.t -> t -> bool
 
-  val of_z : Z.t -> t
   (** [of_z x] builds an element t from the Zarith element x. [mod order] is
       applied if [x > order] *)
+  val of_z : Z.t -> t
 
-  val to_z : t -> Z.t
   (** [to_z x] builds a Zarith element, using the decimal representation.
       Arithmetic on the result can be done using the modular functions on
       integer *)
+  val to_z : t -> Z.t
 end
 
 module MakeFp (S : sig

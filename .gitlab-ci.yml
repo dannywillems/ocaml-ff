@@ -11,7 +11,7 @@ lint:
     - sudo apt-get install m4 -y
     - eval $(opam env)
     - opam update
-    - opam install ocamlformat.0.14.1 -y
+    - opam install ocamlformat.0.15.0 -y
   script:
     - ocamlformat --check benchmark/*.ml*
     - ocamlformat --check js/*.ml*
