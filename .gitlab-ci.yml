@@ -10,8 +10,9 @@ lint:
   before_script:
     - sudo apt-get install m4 -y
     - eval $(opam env)
+    - opam repository set-url default https://opam.ocaml.org
     - opam update
-    - opam install ocamlformat.0.14.1 -y
+    - opam install ocamlformat.0.15.0 -y
   script:
     - ocamlformat --check benchmark/*.ml*
     - ocamlformat --check js/*.ml*
@@ -24,6 +25,7 @@ lint:
     # Always update system package manager + setup OPAM env
     - sudo apt-get update && sudo apt-get upgrade -y
     - eval $(opam env)
+    - opam repository set-url default https://opam.ocaml.org
     - opam update
     - opam depext -i -y zarith
     # Install NVM for the JS test
@@ -66,6 +68,7 @@ build-ocaml-4.10:
     # Always update system package manager + setup OPAM env
     - sudo apt-get update && sudo apt-get upgrade -y
     - eval $(opam env)
+    - opam repository set-url default https://opam.ocaml.org
     - opam update
     - opam depext -i -y zarith
     - opam install -y .
@@ -92,6 +95,7 @@ generate-documentation:
   before_script:
     - sudo apt-get install m4 -y
     - eval $(opam env)
+    - opam repository set-url default https://opam.ocaml.org
     - opam update
     - opam depext -i -y zarith
     - opam install dune odoc
