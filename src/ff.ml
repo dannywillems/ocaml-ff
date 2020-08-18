@@ -1,5 +1,7 @@
-(** General module signature for a finite field *)
-module type T = sig
+(** Base module signature for a finite field *)
+module type BASE = sig
+  exception Not_in_field of Bytes.t
+
   type t
 
   (** The order of the finite field *)
@@ -85,6 +87,29 @@ module type T = sig
   (** Infix operator for [pow] *)
   val ( ** ) : t -> Z.t -> t
 
+  (** From a predefined bytes representation, construct a value t. It is not
+      required that to_bytes of_bytes_exn t = t.
+      Raise [Not_in_field] if the bytes do not represent an element in the field.
+  *)
+  val of_bytes_exn : Bytes.t -> t
+
+  (** From a predefined bytes representation, construct a value t. It is not
+      required that to_bytes (Option.get (of_bytes_opt t)) = t. By default, little endian encoding
+      is used and the given element is modulo the prime order *)
+  val of_bytes_opt : Bytes.t -> t option
+
+  (** Convert the value t to a bytes representation which can be used for
+      hashing for instance. It is not required that to_bytes of_bytes_exn t = t. By
+      default, little endian encoding is used, and length of the resulting bytes
+      may vary depending on the order.
+  *)
+  val to_bytes : t -> Bytes.t
+end
+
+(** Module type for prime field of the form GF(p) where p is prime *)
+module type PRIME = sig
+  include BASE
+
   (** Create a value t from a predefined string representation. It is not
       required that to_string of_string t = t. By default, decimal
       representation of the number is used, modulo the order of the field *)
@@ -94,24 +119,6 @@ module type T = sig
       of_string t = t. By default, decimal representation of the number is
       used *)
   val to_string : t -> string
-
-  (** From a predefined bytes representation, construct a value t. It is not
-      required that to_bytes of_bytes t = t. By default, little endian encoding
-      is used and the given element is modulo the prime order *)
-  val of_bytes : Bytes.t -> t
-
-  (** Convert the value t to a bytes representation which can be used for
-      hashing for instance. It is not required that to_bytes of_bytes t = t. By
-      default, little endian encoding is used, and length of the resulting bytes
-      may vary depending on the order.
-  *)
-  val to_bytes : t -> Bytes.t
-
-  (** Returns a nth root of unity *)
-  val get_nth_root_of_unity : Z.t -> t
-
-  (** [is_nth_root_of_unity n x] returns [true] if [x] is a nth-root of unity*)
-  val is_nth_root_of_unity : Z.t -> t -> bool
 
   (** [of_z x] builds an element t from the Zarith element x. [mod order] is
       applied if [x > order] *)
@@ -123,9 +130,22 @@ module type T = sig
   val to_z : t -> Z.t
 end
 
+(** Module type for prime field with additional functions to manipulate roots of unity *)
+module type PRIME_WITH_ROOT_OF_UNITY = sig
+  include PRIME
+
+  (** Returns a nth root of unity *)
+  val get_nth_root_of_unity : Z.t -> t
+
+  (** [is_nth_root_of_unity n x] returns [true] if [x] is a nth-root of unity*)
+  val is_nth_root_of_unity : Z.t -> t -> bool
+end
+
 module MakeFp (S : sig
   val prime_order : Z.t
-end) : T = struct
+end) : PRIME_WITH_ROOT_OF_UNITY = struct
+  exception Not_in_field of Bytes.t
+
   type t = Z.t
 
   let order =
@@ -211,8 +231,15 @@ end) : T = struct
   (* Decimal representation by default *)
   let to_string s = Z.to_string s
 
-  (* Bytes must be in little endian *)
-  let of_bytes s = Z.erem (Z.of_bits (Bytes.to_string s)) order
+  (** From a predefined bytes representation, construct a value t. It is not
+      required that to_bytes (of_bytes_exn t)) = t. By default, little endian
+      encoding is used and the given element is modulo the prime order *)
+  let of_bytes_exn s = Z.erem (Z.of_bits (Bytes.to_string s)) order
+
+  (** From a predefined bytes representation, construct a value t. It is not
+      required that to_bytes (Option.get (of_bytes_opt t)) = t. By default,
+      little endian encoding is used and the given element is modulo the prime order *)
+  let of_bytes_opt s = Some (of_bytes_exn s)
 
   (* Little endian representation *)
   let to_bytes s =
