@@ -1,5 +1,7 @@
 (** Base module signature for a finite field *)
 module type BASE = sig
+  exception Not_in_field of Bytes.t
+
   type t
 
   (** The order of the finite field *)
@@ -86,12 +88,18 @@ module type BASE = sig
   val ( ** ) : t -> Z.t -> t
 
   (** From a predefined bytes representation, construct a value t. It is not
-      required that to_bytes of_bytes t = t. By default, little endian encoding
+      required that to_bytes of_bytes_exn t = t.
+      Raise [Not_in_field] if the bytes do not represent an element in the field.
+  *)
+  val of_bytes_exn : Bytes.t -> t
+
+  (** From a predefined bytes representation, construct a value t. It is not
+      required that to_bytes (Option.get (of_bytes_opt t)) = t. By default, little endian encoding
       is used and the given element is modulo the prime order *)
-  val of_bytes : Bytes.t -> t
+  val of_bytes_opt : Bytes.t -> t option
 
   (** Convert the value t to a bytes representation which can be used for
-      hashing for instance. It is not required that to_bytes of_bytes t = t. By
+      hashing for instance. It is not required that to_bytes of_bytes_exn t = t. By
       default, little endian encoding is used, and length of the resulting bytes
       may vary depending on the order.
   *)
@@ -136,6 +144,8 @@ end
 module MakeFp (S : sig
   val prime_order : Z.t
 end) : PRIME_WITH_ROOT_OF_UNITY = struct
+  exception Not_in_field of Bytes.t
+
   type t = Z.t
 
   let order =
@@ -221,8 +231,15 @@ end) : PRIME_WITH_ROOT_OF_UNITY = struct
   (* Decimal representation by default *)
   let to_string s = Z.to_string s
 
-  (* Bytes must be in little endian *)
-  let of_bytes s = Z.erem (Z.of_bits (Bytes.to_string s)) order
+  (** From a predefined bytes representation, construct a value t. It is not
+      required that to_bytes (of_bytes_exn t)) = t. By default, little endian
+      encoding is used and the given element is modulo the prime order *)
+  let of_bytes_exn s = Z.erem (Z.of_bits (Bytes.to_string s)) order
+
+  (** From a predefined bytes representation, construct a value t. It is not
+      required that to_bytes (Option.get (of_bytes_opt t)) = t. By default,
+      little endian encoding is used and the given element is modulo the prime order *)
+  let of_bytes_opt s = Some (of_bytes_exn s)
 
   (* Little endian representation *)
   let to_bytes s =

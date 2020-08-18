@@ -364,7 +364,7 @@ module MakeMemoryRepresentation (FiniteField : Ff.BASE) = struct
   let test_to_bytes_of_bytes_inverse () =
     let x = FiniteField.random () in
     let x_bytes = FiniteField.to_bytes x in
-    assert (FiniteField.eq x (FiniteField.of_bytes x_bytes))
+    assert (FiniteField.eq x (FiniteField.of_bytes_exn x_bytes))
 
   let get_tests () =
     let open Alcotest in
