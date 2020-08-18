@@ -7,7 +7,7 @@ let rec repeat ?(n = 100) f =
     repeat ~n:(n - 1) f )
 
 (** Check the routine generators do not raise any exception *)
-module MakeValueGeneration (FiniteField : Ff.T) = struct
+module MakeValueGeneration (FiniteField : Ff.BASE) = struct
   let zero () = ignore @@ FiniteField.zero
 
   let random () = ignore @@ FiniteField.random ()
@@ -76,7 +76,7 @@ module MakeValueGeneration (FiniteField : Ff.T) = struct
         test_case "inverse_one" `Quick (repeat inverse_with_one) ] )
 end
 
-module MakeIsZero (FiniteField : Ff.T) = struct
+module MakeIsZero (FiniteField : Ff.BASE) = struct
   let with_zero_value () = assert (FiniteField.is_zero FiniteField.zero = true)
 
   let rec with_random_value () =
@@ -93,7 +93,7 @@ module MakeIsZero (FiniteField : Ff.T) = struct
         test_case "with random value" `Quick (repeat with_random_value) ] )
 end
 
-module MakeEquality (FiniteField : Ff.T) = struct
+module MakeEquality (FiniteField : Ff.BASE) = struct
   let zero_same_objects () =
     assert (FiniteField.eq FiniteField.zero FiniteField.zero)
 
@@ -114,7 +114,7 @@ module MakeEquality (FiniteField : Ff.T) = struct
         test_case "random_same_objects" `Quick (repeat random_same_objects) ] )
 end
 
-module MakeFieldProperties (FiniteField : Ff.T) = struct
+module MakeFieldProperties (FiniteField : Ff.BASE) = struct
   let zero_nullifier_random () =
     (* 0 * g = 0 *)
     let random = FiniteField.random () in
@@ -355,7 +355,7 @@ module MakeFieldProperties (FiniteField : Ff.T) = struct
           (repeat multiplicative_associativity) ] )
 end
 
-module MakeMemoryRepresentation (FiniteField : Ff.T) = struct
+module MakeMemoryRepresentation (FiniteField : Ff.BASE) = struct
   let test_to_bytes_has_correct_size () =
     let x = FiniteField.random () in
     let x_bytes = FiniteField.to_bytes x in

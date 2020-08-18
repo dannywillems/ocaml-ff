@@ -1,5 +1,5 @@
-(** General module signature for a finite field *)
-module type T = sig
+(** Base module signature for a finite field *)
+module type BASE = sig
   type t
 
   (** The order of the finite field *)
@@ -85,16 +85,6 @@ module type T = sig
   (** Infix operator for [pow] *)
   val ( ** ) : t -> Z.t -> t
 
-  (** Create a value t from a predefined string representation. It is not
-      required that to_string of_string t = t. By default, decimal
-      representation of the number is used, modulo the order of the field *)
-  val of_string : string -> t
-
-  (** String representation of a value t. It is not required that to_string
-      of_string t = t. By default, decimal representation of the number is
-      used *)
-  val to_string : t -> string
-
   (** From a predefined bytes representation, construct a value t. It is not
       required that to_bytes of_bytes t = t. By default, little endian encoding
       is used and the given element is modulo the prime order *)
@@ -106,12 +96,21 @@ module type T = sig
       may vary depending on the order.
   *)
   val to_bytes : t -> Bytes.t
+end
 
-  (** Returns a nth root of unity *)
-  val get_nth_root_of_unity : Z.t -> t
+(** Module type for prime field of the form GF(p) where p is prime *)
+module type PRIME = sig
+  include BASE
 
-  (** [is_nth_root_of_unity n x] returns [true] if [x] is a nth-root of unity*)
-  val is_nth_root_of_unity : Z.t -> t -> bool
+  (** Create a value t from a predefined string representation. It is not
+      required that to_string of_string t = t. By default, decimal
+      representation of the number is used, modulo the order of the field *)
+  val of_string : string -> t
+
+  (** String representation of a value t. It is not required that to_string
+      of_string t = t. By default, decimal representation of the number is
+      used *)
+  val to_string : t -> string
 
   (** [of_z x] builds an element t from the Zarith element x. [mod order] is
       applied if [x > order] *)
@@ -123,9 +122,20 @@ module type T = sig
   val to_z : t -> Z.t
 end
 
+(** Module type for prime field with additional functions to manipulate roots of unity *)
+module type PRIME_WITH_ROOT_OF_UNITY = sig
+  include PRIME
+
+  (** Returns a nth root of unity *)
+  val get_nth_root_of_unity : Z.t -> t
+
+  (** [is_nth_root_of_unity n x] returns [true] if [x] is a nth-root of unity*)
+  val is_nth_root_of_unity : Z.t -> t -> bool
+end
+
 module MakeFp (S : sig
   val prime_order : Z.t
-end) : T = struct
+end) : PRIME_WITH_ROOT_OF_UNITY = struct
   type t = Z.t
 
   let order =
