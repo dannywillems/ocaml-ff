@@ -101,7 +101,7 @@ doc:
     - opam install . -y
   script:
     - dune build @doc
-    - cp -r _build/default/_doc/_html/ odoc/
+    - cp -r _build/default/_doc/_html odoc/
   artifacts:
     paths:
       - odoc
@@ -120,10 +120,9 @@ pages:
     - opam depext -i -y zarith
     - opam install odoc -y
     - opam install . -y
-    - mkdir -p public
   script:
     - dune build @doc
-    - cp -r _build/default/_doc/_html/ public/
+    - cp -r _build/default/_doc/_html public/
   artifacts:
     paths:
       - public
