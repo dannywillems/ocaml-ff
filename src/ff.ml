@@ -10,6 +10,10 @@ module type BASE = sig
   (** minimal number of bytes required to encode a value of the field. *)
   val size_in_bytes : int
 
+  (** [check_bytes bs] returns [true] if [bs] is a correct byte
+      representation of a field element *)
+  val check_bytes : Bytes.t -> bool
+
   (** The neutral element for the addition *)
   val zero : t
 
@@ -159,6 +163,10 @@ end) : PRIME_WITH_ROOT_OF_UNITY = struct
   let zero = Z.zero
 
   let one = Z.one
+
+  (** By default, any bytes sequence is valid because we care about the result
+      modulo the order *)
+  let check_bytes _bs = true
 
   let is_zero s = Z.equal (Z.erem s order) Z.zero
 
