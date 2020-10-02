@@ -34,3 +34,7 @@ let x = FF.random();
 let y = FF.random();
 let x_plus_y = FF.add(x, y);
 ```
+
+## Documentation
+
+See [here](https://dannywillems.gitlab.io/ocaml-ff/)
