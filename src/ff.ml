@@ -26,12 +26,14 @@ module type BASE = sig
   (** [is_one x] returns [true] if [x] is the neutral element for the multiplication *)
   val is_one : t -> bool
 
-  (** [random ()] returns a random element of the field. A state for the PRNG
+  (** Use carefully!
+      [random ()] returns a random element of the field. A state for the PRNG
       can be given to initialize the PRNG in the requested state. If no state is
       given, no initialisation is performed *)
   val random : ?state:Random.State.t -> unit -> t
 
-  (** [non_null_random ()] returns a non null random element of the field.
+  (** Use carefully!
+      [non_null_random ()] returns a non null random element of the field.
       A state for the PRNG can be given to initialize the PRNG in the requested
       state. If no state is given, no initialisation is performed *)
   val non_null_random : ?state:Random.State.t -> unit -> t
