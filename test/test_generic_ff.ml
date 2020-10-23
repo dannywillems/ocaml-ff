@@ -48,6 +48,15 @@ module FFBaseCurve25519FieldProperties =
 module FFBaseCurve25519MemoryRepresentation =
   Test_ff_make.MakeMemoryRepresentation (FFBaseCurve25519)
 
+module F13_2 =
+  Ff.MakeFp2
+    (F13)
+    (struct
+      let nsr = F13.(negate (of_string "2"))
+    end)
+
+module F13_2FieldProperties = Test_ff_make.MakeFieldProperties (F13_2)
+
 let test_size_in_bytes () =
   let open Alcotest in
   ( "Test size in bytes computation for different orders",
@@ -99,5 +108,6 @@ let () =
       FFBaseCurve25519Equality.get_tests ();
       FFBaseCurve25519FieldProperties.get_tests ();
       FFBaseCurve25519MemoryRepresentation.get_tests ();
+      F13_2FieldProperties.get_tests ();
       (* test size in bytes *)
       test_size_in_bytes () ]
