@@ -287,6 +287,8 @@ module MakeFp2
   val components : t -> Fp.t * Fp.t
 end = struct
   (* The following arithmetic does not work with p = 2 *)
+
+  ;;
   assert (Z.is_odd Fp.order)
 
   exception Not_in_field of Bytes.t
