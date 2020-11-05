@@ -70,10 +70,6 @@ build-ocaml-4.10:
     - opam install core_bench.v0.12.0
     - dune build benchmark/bench_ff.exe
 
-benchmark-ocaml-4.07:
-  <<: *benchmark_definition
-  image: ocaml/opam2:4.07
-
 benchmark-ocaml-4.08:
   <<: *benchmark_definition
   image: ocaml/opam2:4.08
