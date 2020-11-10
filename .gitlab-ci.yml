@@ -43,17 +43,57 @@ lint:
     - cp _build/default/js/FiniteField.js js/test
     - node js/test/test_js.js
 
+# OCaml 4.08
 build-ocaml-4.08:
   <<: *build_definition
   image: ocaml/opam2:4.08
 
+build-ocaml-4.08.0:
+  <<: *build_definition
+  image: ocaml/opam2:4.08.0
+
+build-ocaml-4.08.1:
+  <<: *build_definition
+  image: ocaml/opam2:4.08.1
+
+# OCaml 4.09
 build-ocaml-4.09:
   <<: *build_definition
   image: ocaml/opam2:4.09
 
+build-ocaml-4.09.0:
+  <<: *build_definition
+  image: ocaml/opam2:4.09.0
+
+build-ocaml-4.09.1:
+  <<: *build_definition
+  image: ocaml/opam2:4.09.1
+
+# OCaml 4.10
 build-ocaml-4.10:
   <<: *build_definition
   image: ocaml/opam2:4.10
+
+build-ocaml-4.10.0:
+  <<: *build_definition
+  image: ocaml/opam2:4.10.0
+
+build-ocaml-4.10.1:
+  <<: *build_definition
+  image: ocaml/opam2:4.10.1
+
+# OCaml 4.11
+build-ocaml-4.11:
+  <<: *build_definition
+  image: ocaml/opam2:4.11
+
+build-ocaml-4.11.0:
+  <<: *build_definition
+  image: ocaml/opam2:4.11.0
+
+build-ocaml-4.11.1:
+  <<: *build_definition
+  image: ocaml/opam2:4.11.1
 
 .benchmark: &benchmark_definition
   stage: benchmark
