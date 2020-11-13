@@ -126,13 +126,13 @@ module type PRIME = sig
       used *)
   val to_string : t -> string
 
-  (** [of_z x] builds an element t from the Zarith element x. [mod order] is
-      applied if [x > order] *)
+  (** [of_z x] builds an element t from the Zarith element [x]. [mod order] is
+      applied if [x >= order] *)
   val of_z : Z.t -> t
 
   (** [to_z x] builds a Zarith element, using the decimal representation.
       Arithmetic on the result can be done using the modular functions on
-      integer *)
+      integers *)
   val to_z : t -> Z.t
 end
 
