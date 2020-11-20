@@ -1,4 +1,13 @@
 (library
  (public_name ff)
+ (name ff)
+ (modules ff)
  (libraries zarith)
- (name ff))
+)
+
+(library
+ (public_name ff-pbt)
+ (name ff_pbt)
+ (modules ff_pbt)
+ (libraries ff zarith alcotest)
+)
