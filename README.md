@@ -38,3 +38,24 @@ let x_plus_y = FF.add(x, y);
 ## Documentation
 
 See [here](https://dannywillems.gitlab.io/ocaml-ff/)
+
+
+## PBT testing
+
+A package `ff-pbt` is also included and published providing Property Based
+Testing of finite fields based on the generic finite fields interface given in
+`ff`.
+If you have a library implementing finite fields, but not using the functors
+provided by `ff`, you can use:
+
+```ocaml
+(* You module is MyField *)
+
+module MyFieldProperties = Ff_pbt.MakeFieldProperties (MyField)
+
+let () =
+  let open Alcotest in
+  run "MyField" [MyFieldProperties.get_tests()]
+```
+
+It is stronly relying on the `random` function implemented by the finite field module.
