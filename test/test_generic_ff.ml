@@ -2,24 +2,22 @@ module F13 = Ff.MakeFp (struct
   let prime_order = Z.of_string "13"
 end)
 
-module F13ValueGeneration = Test_ff_make.MakeValueGeneration (F13)
-module F13IsZero = Test_ff_make.MakeIsZero (F13)
-module F13Equality = Test_ff_make.MakeEquality (F13)
-module F13FieldProperties = Test_ff_make.MakeFieldProperties (F13)
-module F13MemoryRepresentation = Test_ff_make.MakeMemoryRepresentation (F13)
+module F13ValueGeneration = Ff_pbt.MakeValueGeneration (F13)
+module F13IsZero = Ff_pbt.MakeIsZero (F13)
+module F13Equality = Ff_pbt.MakeEquality (F13)
+module F13FieldProperties = Ff_pbt.MakeFieldProperties (F13)
+module F13MemoryRepresentation = Ff_pbt.MakeMemoryRepresentation (F13)
 
 module F1073740201 = Ff.MakeFp (struct
   let prime_order = Z.of_string "1073740201"
 end)
 
-module FF1073740201ValueGeneration =
-  Test_ff_make.MakeValueGeneration (F1073740201)
-module FF1073740201IsZero = Test_ff_make.MakeIsZero (F1073740201)
-module FF1073740201Equality = Test_ff_make.MakeEquality (F1073740201)
-module FF1073740201FieldProperties =
-  Test_ff_make.MakeFieldProperties (F1073740201)
+module FF1073740201ValueGeneration = Ff_pbt.MakeValueGeneration (F1073740201)
+module FF1073740201IsZero = Ff_pbt.MakeIsZero (F1073740201)
+module FF1073740201Equality = Ff_pbt.MakeEquality (F1073740201)
+module FF1073740201FieldProperties = Ff_pbt.MakeFieldProperties (F1073740201)
 module FF1073740201MemoryRepresentation =
-  Test_ff_make.MakeMemoryRepresentation (F1073740201)
+  Ff_pbt.MakeMemoryRepresentation (F1073740201)
 
 module FFLong = Ff.MakeFp (struct
   let prime_order =
@@ -27,12 +25,11 @@ module FFLong = Ff.MakeFp (struct
       "4002409555221667393417789825735904156556882819939007885332058136124031650490837864442687629129015664037894272559787"
 end)
 
-module FFLongValueGeneration = Test_ff_make.MakeValueGeneration (FFLong)
-module FFLongIsZero = Test_ff_make.MakeIsZero (FFLong)
-module FFLongEquality = Test_ff_make.MakeEquality (FFLong)
-module FFLongFieldProperties = Test_ff_make.MakeFieldProperties (FFLong)
-module FFLongMemoryRepresentation =
-  Test_ff_make.MakeMemoryRepresentation (FFLong)
+module FFLongValueGeneration = Ff_pbt.MakeValueGeneration (FFLong)
+module FFLongIsZero = Ff_pbt.MakeIsZero (FFLong)
+module FFLongEquality = Ff_pbt.MakeEquality (FFLong)
+module FFLongFieldProperties = Ff_pbt.MakeFieldProperties (FFLong)
+module FFLongMemoryRepresentation = Ff_pbt.MakeMemoryRepresentation (FFLong)
 
 (* This is the base field of the Curve 25519, the name comes from its order: p**255 - 19*)
 module FFBaseCurve25519 = Ff.MakeFp (struct
@@ -40,13 +37,13 @@ module FFBaseCurve25519 = Ff.MakeFp (struct
 end)
 
 module FFBaseCurve25519ValueGeneration =
-  Test_ff_make.MakeValueGeneration (FFBaseCurve25519)
-module FFBaseCurve25519IsZero = Test_ff_make.MakeIsZero (FFBaseCurve25519)
-module FFBaseCurve25519Equality = Test_ff_make.MakeEquality (FFBaseCurve25519)
+  Ff_pbt.MakeValueGeneration (FFBaseCurve25519)
+module FFBaseCurve25519IsZero = Ff_pbt.MakeIsZero (FFBaseCurve25519)
+module FFBaseCurve25519Equality = Ff_pbt.MakeEquality (FFBaseCurve25519)
 module FFBaseCurve25519FieldProperties =
-  Test_ff_make.MakeFieldProperties (FFBaseCurve25519)
+  Ff_pbt.MakeFieldProperties (FFBaseCurve25519)
 module FFBaseCurve25519MemoryRepresentation =
-  Test_ff_make.MakeMemoryRepresentation (FFBaseCurve25519)
+  Ff_pbt.MakeMemoryRepresentation (FFBaseCurve25519)
 
 module F13_2 =
   Ff.MakeFp2
@@ -55,7 +52,7 @@ module F13_2 =
       let nsr = F13.(negate (of_string "2"))
     end)
 
-module F13_2FieldProperties = Test_ff_make.MakeFieldProperties (F13_2)
+module F13_2FieldProperties = Ff_pbt.MakeFieldProperties (F13_2)
 
 let test_size_in_bytes () =
   let open Alcotest in

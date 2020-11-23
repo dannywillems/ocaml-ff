@@ -1,6 +1,6 @@
 open Core_bench
 
-module FFBenchmark (F : Ff.BASE) = struct
+module FFBenchmark (F : Ff_sig.BASE) = struct
   let e1 = F.random ()
 
   let e2 = F.random ()
