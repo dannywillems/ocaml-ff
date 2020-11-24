@@ -53,6 +53,10 @@ module F13_2 =
     end)
 
 module F13_2FieldProperties = Ff_pbt.MakeFieldProperties (F13_2)
+module F13_2ValueGeneration = Ff_pbt.MakeValueGeneration (F13_2)
+module F13_2IsZero = Ff_pbt.MakeIsZero (F13_2)
+module F13_2Equality = Ff_pbt.MakeEquality (F13_2)
+module F13_2MemoryRepresentation = Ff_pbt.MakeMemoryRepresentation (F13_2)
 
 let test_size_in_bytes () =
   let open Alcotest in
@@ -105,6 +109,11 @@ let () =
       FFBaseCurve25519Equality.get_tests ();
       FFBaseCurve25519FieldProperties.get_tests ();
       FFBaseCurve25519MemoryRepresentation.get_tests ();
+      (* GF(13²)*)
       F13_2FieldProperties.get_tests ();
+      F13_2IsZero.get_tests ();
+      F13_2ValueGeneration.get_tests ();
+      F13_2MemoryRepresentation.get_tests ();
+      F13_2Equality.get_tests ();
       (* test size in bytes *)
       test_size_in_bytes () ]
