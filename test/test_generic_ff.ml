@@ -4,6 +4,12 @@ end)
 
 module F2Tests = Ff_pbt.MakeAll (F2)
 
+module F3 = Ff.MakeFp (struct
+  let prime_order = Z.of_string "3"
+end)
+
+module F3Tests = Ff_pbt.MakeAll (F3)
+
 module F13 = Ff.MakeFp (struct
   let prime_order = Z.of_string "13"
 end)
@@ -68,6 +74,6 @@ let () =
   run
     "Random fields"
     ( (test_size_in_bytes () :: F2Tests.get_tests ())
-    @ F13Tests.get_tests () @ FFLongTests.get_tests ()
+    @ F3Tests.get_tests () @ F13Tests.get_tests () @ FFLongTests.get_tests ()
     @ FFBaseCurve25519Tests.get_tests ()
     @ F13_2Tests.get_tests () )
