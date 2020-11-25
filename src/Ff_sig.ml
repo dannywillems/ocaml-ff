@@ -134,6 +134,11 @@ module type PRIME = sig
       Arithmetic on the result can be done using the modular functions on
       integers *)
   val to_z : t -> Z.t
+
+  (** [is_quadratic_residue x] returns [true] if [x] is a quadratic residue i.e.
+      if there exists [n] such that [n^2 mod p = 0]
+  *)
+  val is_quadratic_residue : t -> bool
 end
 
 (** Module type for prime field with additional functions to manipulate roots of unity *)

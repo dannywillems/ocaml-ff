@@ -381,6 +381,22 @@ module MakeMemoryRepresentation (FiniteField : Ff_sig.BASE) = struct
           (repeat test_to_bytes_of_bytes_inverse) ] )
 end
 
+module MakeQuadraticResidue (PrimeField : Ff_sig.PRIME) = struct
+  let test_is_quadratic_residue () =
+    let r = PrimeField.random () in
+    assert (PrimeField.(is_quadratic_residue (r * r)))
+
+  let get_tests () =
+    let open Alcotest in
+    ( Printf.sprintf
+        "Quadratic residue tests for prime field of order %s"
+        (Z.to_string PrimeField.order),
+      [ test_case
+          "With random elements and using its square"
+          `Quick
+          (repeat ~n:1000 test_is_quadratic_residue) ] )
+end
+
 module MakeAll (FiniteField : Ff_sig.BASE) = struct
   module ValueGeneration = MakeValueGeneration (FiniteField)
   module IsZero = MakeIsZero (FiniteField)

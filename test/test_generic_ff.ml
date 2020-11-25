@@ -3,24 +3,29 @@ module F2 = Ff.MakeFp (struct
 end)
 
 module F2Tests = Ff_pbt.MakeAll (F2)
+module F2QuadraticResidueTests = Ff_pbt.MakeQuadraticResidue (F2)
 
 module F3 = Ff.MakeFp (struct
   let prime_order = Z.of_string "3"
 end)
 
 module F3Tests = Ff_pbt.MakeAll (F3)
+module F3QuadraticResidueTests = Ff_pbt.MakeQuadraticResidue (F3)
 
 module F13 = Ff.MakeFp (struct
   let prime_order = Z.of_string "13"
 end)
 
 module F13Tests = Ff_pbt.MakeAll (F13)
+module F13QuadraticResidueTests = Ff_pbt.MakeQuadraticResidue (F13)
 
 module F1073740201 = Ff.MakeFp (struct
   let prime_order = Z.of_string "1073740201"
 end)
 
 module F1073740201Tests = Ff_pbt.MakeAll (F1073740201)
+module F1073740201QuadraticResidueTests =
+  Ff_pbt.MakeQuadraticResidue (F1073740201)
 
 module FFLong = Ff.MakeFp (struct
   let prime_order =
@@ -29,6 +34,7 @@ module FFLong = Ff.MakeFp (struct
 end)
 
 module FFLongTests = Ff_pbt.MakeAll (FFLong)
+module FFLongQuadraticResidueTests = Ff_pbt.MakeQuadraticResidue (FFLong)
 
 (* This is the base field of the Curve 25519, the name comes from its order: p**255 - 19*)
 module FFBaseCurve25519 = Ff.MakeFp (struct
@@ -36,6 +42,8 @@ module FFBaseCurve25519 = Ff.MakeFp (struct
 end)
 
 module FFBaseCurve25519Tests = Ff_pbt.MakeAll (FFBaseCurve25519)
+module FFBaseCurve25519QuadraticResidueTests =
+  Ff_pbt.MakeQuadraticResidue (FFBaseCurve25519)
 
 module F13_2 =
   Ff.MakeFp2
@@ -73,7 +81,13 @@ let () =
   let open Alcotest in
   run
     "Random fields"
-    ( (test_size_in_bytes () :: F2Tests.get_tests ())
+    ( test_size_in_bytes ()
+      :: F2QuadraticResidueTests.get_tests ()
+      :: F13QuadraticResidueTests.get_tests ()
+      :: F1073740201QuadraticResidueTests.get_tests ()
+      :: FFLongQuadraticResidueTests.get_tests ()
+      :: FFBaseCurve25519QuadraticResidueTests.get_tests ()
+      :: F2Tests.get_tests ()
     @ F3Tests.get_tests () @ F13Tests.get_tests () @ FFLongTests.get_tests ()
     @ FFBaseCurve25519Tests.get_tests ()
     @ F13_2Tests.get_tests () )
