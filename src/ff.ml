@@ -77,12 +77,7 @@ end) : PRIME_WITH_ROOT_OF_UNITY = struct
     if Z.equal n Z.zero then one
     else if is_zero x then zero
     else if Z.equal n Z.one then x
-    else
-      let n = Z.erem n (Z.pred order) in
-      let (a, r) = Z.ediv_rem n two_z in
-      let acc = pow x a in
-      let acc_square = mul acc acc in
-      if Z.equal r Z.zero then acc_square else mul acc_square x
+    else Z.powm x n order
 
   let ( ** ) = pow
 
