@@ -136,7 +136,7 @@ module type PRIME = sig
   val to_z : t -> Z.t
 
   (** [is_quadratic_residue x] returns [true] if [x] is a quadratic residue i.e.
-      if there exists [n] such that [n^2 mod p = 0]
+      if there exists [n] such that [n^2 mod p = 1]
   *)
   val is_quadratic_residue : t -> bool
 end
