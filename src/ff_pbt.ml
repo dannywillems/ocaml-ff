@@ -380,3 +380,18 @@ module MakeMemoryRepresentation (FiniteField : Ff_sig.BASE) = struct
           `Quick
           (repeat test_to_bytes_of_bytes_inverse) ] )
 end
+
+module MakeAll (FiniteField : Ff_sig.BASE) = struct
+  module ValueGeneration = MakeValueGeneration (FiniteField)
+  module IsZero = MakeIsZero (FiniteField)
+  module Equality = MakeEquality (FiniteField)
+  module FieldProperties = MakeFieldProperties (FiniteField)
+  module MemoryRepresentation = MakeMemoryRepresentation (FiniteField)
+
+  let get_tests () =
+    [ ValueGeneration.get_tests ();
+      IsZero.get_tests ();
+      Equality.get_tests ();
+      FieldProperties.get_tests ();
+      MemoryRepresentation.get_tests () ]
+end
