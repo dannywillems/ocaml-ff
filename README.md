@@ -35,6 +35,19 @@ let y = FF.random();
 let x_plus_y = FF.add(x, y);
 ```
 
+## Install
+
+```
+opam install ff
+```
+
+For a specific version (from 0.2.1), use
+```shell
+opam install ff.0.3.0
+```
+Replace 0.3.0 with the version you want, see [tags](https://gitlab.com/dannywillems/ocaml-ff/tags).
+
+
 ## Documentation
 
 See [here](https://dannywillems.gitlab.io/ocaml-ff/)
