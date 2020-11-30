@@ -14,9 +14,9 @@ depends: [
   # Has not been tested with other Zarith versions.
   # The CI should verify it and it can then be extent
   "zarith" {>= "1.9.1" & < "2.0"}
-  "ff-sig" {= "0.5.0"}
+  "ff-sig" {= version}
   "alcotest" {with-test}
-  "ff-pbt" {= "0.5.0" & with-test}
+  "ff-pbt" {= version & with-test}
 ]
 build: [[ "dune" "build" "-j" jobs "-p" name "@install" ]]
 run-test: [[ "dune" "runtest" "-p" name "-j" jobs ]]
