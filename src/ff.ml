@@ -49,19 +49,11 @@ end) : PRIME_WITH_ROOT_OF_UNITY = struct
 
   let add a b = Z.erem (Z.add a b) order
 
-  let ( + ) = add
-
   let mul a b = Z.erem (Z.mul a b) order
-
-  let ( * ) = mul
 
   let eq a b = Z.equal (Z.erem a order) (Z.erem b order)
 
-  let ( = ) = eq
-
   let negate a = Z.sub order a
-
-  let ( - ) = negate
 
   let inverse_exn a =
     if a = zero then raise Division_by_zero else Z.invert a order
@@ -74,8 +66,6 @@ end) : PRIME_WITH_ROOT_OF_UNITY = struct
 
   let div_opt a b = if b = zero then None else Some (mul a (inverse_exn b))
 
-  let ( / ) = div_exn
-
   let square x = Z.mul x x
 
   let double x = Z.add x x
@@ -85,8 +75,6 @@ end) : PRIME_WITH_ROOT_OF_UNITY = struct
     else if is_zero x then zero
     else if Z.equal n Z.one then x
     else Z.powm x n order
-
-  let ( ** ) = pow
 
   (* Decimal representation by default *)
   let of_string s = Z.erem (Z.of_string s) order
@@ -136,6 +124,17 @@ end) : PRIME_WITH_ROOT_OF_UNITY = struct
 
   let is_quadratic_residue x =
     if is_zero x then true else is_one (legendre_symbol x)
+  let ( + ) = add
+
+  let ( * ) = mul
+
+  let ( - ) = negate
+
+  let ( ** ) = pow
+
+  let ( = ) = eq
+
+  let ( / ) = div_exn
 end
 
 module MakeFp2
@@ -184,8 +183,6 @@ end = struct
 
   let add (x1, y1) (x2, y2) = (Fp.(x1 + x2), Fp.(y1 + y2))
 
-  let ( + ) = add
-
   let mul (x1, y1) (x2, y2) =
     let open Fp in
     let tmp_x = x1 * x2 in
@@ -194,15 +191,9 @@ end = struct
     let y' = (x1 * y2) + (y1 * x2) in
     (x', y')
 
-  let ( * ) = mul
-
   let eq (x1, y1) (x2, y2) = Fp.(x1 = x2 && y1 = y2)
 
-  let ( = ) = eq
-
   let negate (x, y) = (Fp.negate x, Fp.negate y)
-
-  let ( - ) = negate
 
   let aux_inverse (x, y) =
     (* Let's use square in case of `*` is not optimised for the square case *)
@@ -226,8 +217,6 @@ end = struct
 
   let div_opt a b = if b = zero then None else Some (mul a (inverse_exn b))
 
-  let ( / ) = div_exn
-
   let square (a, b) =
     let ab = Fp.(a * b) in
     Fp.
@@ -250,8 +239,6 @@ end = struct
       let acc = pow x a in
       let acc_square = mul acc acc in
       if Z.equal r Z.zero then acc_square else mul acc_square x
-
-  let ( ** ) = pow
 
   (** From a predefined bytes representation, construct a value t. It is not
       required that to_bytes (of_bytes_exn t)) = t. By default, little endian
@@ -292,4 +279,16 @@ end = struct
       (Int.div size_in_bytes 2)
       (Int.div size_in_bytes 2) ;
     b
+
+  let ( + ) = add
+
+  let ( * ) = mul
+
+  let ( - ) = negate
+
+  let ( ** ) = pow
+
+  let ( = ) = eq
+
+  let ( / ) = div_exn
 end
