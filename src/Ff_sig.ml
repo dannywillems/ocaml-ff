@@ -139,6 +139,9 @@ module type PRIME = sig
       if there exists [n] such that [n^2 mod p = 1]
   *)
   val is_quadratic_residue : t -> bool
+
+  (** Returns the Legendre symbol of the parameter *)
+  val legendre_symbol : t -> Z.t
 end
 
 (** Module type for prime field with additional functions to manipulate roots of unity *)
