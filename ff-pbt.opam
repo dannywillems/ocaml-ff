@@ -10,11 +10,12 @@ bug-reports: "https://gitlab.com/dannywillems/ocaml-ff/issues"
 license: "MIT"
 depends: [
   "ocaml" {>= "4.08"}
-  "dune" {>= "2.0"}
+  "dune" {>= "2.7"}
   # Has not been tested with other Zarith versions.
   # The CI should verify it and it can then be extent
   "zarith" {>= "1.9.1" & < "2.0"}
   "ff-sig" {= version}
   "alcotest"
+  "bisect_ppx" { with-test & >= "2.5" }
 ]
 build: [[ "dune" "build" "-j" jobs "-p" name "@install" ]]
