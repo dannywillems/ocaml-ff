@@ -77,11 +77,50 @@ let test_size_in_bytes () =
               assert (P.size_in_bytes = expected_nb_bytes))
             l) ] )
 
+let test_vectors_legendre_symbol () =
+  let open Alcotest in
+  (* Table of value here: https://en.wikipedia.org/wiki/Legendre_symbol *)
+  let test_vectors =
+    [ ("5", "2", "-1");
+      ("17", "1", "1");
+      ("17", "2", "1");
+      ("17", "3", "-1");
+      ("17", "4", "1");
+      ("17", "5", "-1");
+      ("17", "6", "-1");
+      ("17", "7", "-1");
+      ("17", "8", "1");
+      ("2", "1", "1");
+      ("3", "1", "1");
+      ("5", "1", "1");
+      ("7", "1", "1");
+      ("97", "1", "1");
+      ("101", "1", "1");
+      ("103", "1", "1");
+      ("103", "17", "1");
+      ("103", "21", "-1");
+      ("103", "22", "-1");
+      ("127", "1", "1") ]
+  in
+  ( "Test legendre symbol result on test vectors",
+    [ test_case "Test vectors" `Quick (fun () ->
+          List.iter
+            (fun (prime_order, v, expected_result) ->
+              let module Fp = Ff.MakeFp (struct
+                let prime_order = Z.of_string prime_order
+              end) in
+              assert (
+                Z.equal
+                  (Fp.legendre_symbol (Fp.of_string v))
+                  (Z.of_string expected_result) ))
+            test_vectors) ] )
+
 let () =
   let open Alcotest in
   run
     "Random fields"
     ( test_size_in_bytes ()
+      :: test_vectors_legendre_symbol ()
       :: F2QuadraticResidueTests.get_tests ()
       :: F13QuadraticResidueTests.get_tests ()
       :: F1073740201QuadraticResidueTests.get_tests ()
