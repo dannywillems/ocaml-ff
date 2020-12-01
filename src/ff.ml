@@ -66,7 +66,7 @@ end) : PRIME_WITH_ROOT_OF_UNITY = struct
 
   let div_opt a b = if b = zero then None else Some (mul a (inverse_exn b))
 
-  let square x = Z.mul x x
+  let square x = mul x x
 
   let double x = Z.add x x
 
