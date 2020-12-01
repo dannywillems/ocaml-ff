@@ -122,11 +122,10 @@ end) : PRIME_WITH_ROOT_OF_UNITY = struct
 
   let of_z t = Z.erem t order
 
-  let is_quadratic_residue x =
-    if is_zero x then true
-    else is_one (pow x (Z.divexact (Z.pred order) (Z.of_int 2)))
-
   let legendre_symbol x = to_z (pow x (Z.divexact (Z.pred order) (Z.of_int 2)))
+
+  let is_quadratic_residue x =
+    if is_zero x then true else is_one (legendre_symbol x)
 end
 
 module MakeFp2
