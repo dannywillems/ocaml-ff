@@ -9,6 +9,15 @@ end) : PRIME_WITH_ROOT_OF_UNITY = struct
     assert (S.prime_order >= Z.of_string "2") ;
     S.prime_order
 
+  let two_z = Z.succ Z.one
+
+  let factor_power_of_two =
+    let rec aux i n =
+      let (q, r) = Z.ediv_rem n two_z in
+      if Z.equal r Z.zero then aux (i + 1) q else (i, n)
+    in
+    aux 0 (Z.pred order)
+
   let log256 n = log n /. log 256.
 
   let size_in_bytes = int_of_float (log256 (Z.to_float order)) + 1
@@ -70,8 +79,6 @@ end) : PRIME_WITH_ROOT_OF_UNITY = struct
   let square x = Z.mul x x
 
   let double x = Z.add x x
-
-  let two_z = Z.succ Z.one
 
   let rec pow x n =
     if Z.equal n Z.zero then one

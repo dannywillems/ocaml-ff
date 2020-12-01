@@ -115,12 +115,35 @@ let test_vectors_legendre_symbol () =
                   (Z.of_string expected_result) ))
             test_vectors) ] )
 
+let test_vectors_power_of_two () =
+  let open Alcotest in
+  (* Table of value here: https://en.wikipedia.org/wiki/Legendre_symbol *)
+  let test_vectors =
+    [ ("7", (1, "3"));
+      ("13", (2, "3"));
+      ("127", (1, "63"));
+      ("90859051", (1, "45429525")) ]
+  in
+  ( "Test factor in power of two (used for instance for Tonelli Shanks)",
+    [ test_case "Test vectors" `Quick (fun () ->
+          List.iter
+            (fun (prime_order, (expected_s, expected_q)) ->
+              let module Fp = Ff.MakeFp (struct
+                let prime_order = Z.of_string prime_order
+              end) in
+              let (s, q) = Fp.factor_power_of_two in
+              assert (s = expected_s && Z.equal q (Z.of_string expected_q)) ;
+              let res = Z.(mul (pow (Z.succ Z.one) s) q) in
+              assert (Z.(equal res (Z.pred (Z.of_string prime_order)))))
+            test_vectors) ] )
+
 let () =
   let open Alcotest in
   run
     "Random fields"
     ( test_size_in_bytes ()
       :: test_vectors_legendre_symbol ()
+      :: test_vectors_power_of_two ()
       :: F2QuadraticResidueTests.get_tests ()
       :: F13QuadraticResidueTests.get_tests ()
       :: F1073740201QuadraticResidueTests.get_tests ()

@@ -116,6 +116,9 @@ end
 module type PRIME = sig
   include BASE
 
+  (** Returns [s, q] such that [order - 1 = 2^s * q] *)
+  val factor_power_of_two : int * Z.t
+
   (** Create a value t from a predefined string representation. It is not
       required that to_string of_string t = t. By default, decimal
       representation of the number is used, modulo the order of the field *)
