@@ -124,6 +124,44 @@ end) : PRIME_WITH_ROOT_OF_UNITY = struct
 
   let is_quadratic_residue x =
     if is_zero x then true else is_one (legendre_symbol x)
+
+  let sqrt_opt ?(opposite = false) x =
+    if not (is_quadratic_residue x) then None
+    else
+      (* https://en.wikipedia.org/wiki/Tonelli%E2%80%93Shanks_algorithm *)
+      let (s, q) = factor_power_of_two in
+      if s = 1 then
+        (* r = x^((p + 1) / 4) *)
+        let r = pow x (Z.divexact (Z.succ order) (Z.of_string "4")) in
+        if opposite then Some (negate r) else Some r
+      else
+        let rec pick_non_square () =
+          let z = random () in
+          if Z.equal (legendre_symbol z) (Z.of_int (-1)) then z
+          else pick_non_square ()
+        in
+        let rec compute_lowest_n_2th_root_of_unity i x upper =
+          let x = square x in
+          if is_one x then i
+          else if i = upper then failwith "Upperbound should be higher"
+          else compute_lowest_n_2th_root_of_unity (i + 1) x upper
+        in
+        let z = pick_non_square () in
+        let c = pow z q in
+        let rec aux m c t r =
+          if eq t zero then zero (* case x is zero *)
+          else if eq t one then r (* base case *)
+          else
+            let i = compute_lowest_n_2th_root_of_unity 1 t m in
+            let b = pow c (Z.pow two_z (m - i - 1)) in
+            let m = i in
+            let c = mul b b in
+            let t = mul t c in
+            let r = mul r b in
+            aux m c t r
+        in
+        Some (aux s c (pow x q) (pow x (Z.divexact (Z.succ q) two_z)))
+
   let ( + ) = add
 
   let ( * ) = mul

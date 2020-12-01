@@ -146,6 +146,8 @@ module type PRIME = sig
   *)
   val is_quadratic_residue : t -> bool
 
+  (** [sqrt_opt x] returns a square root of [x] *)
+  val sqrt_opt : ?opposite:bool -> t -> t option
 end
 
 (** Module type for prime field with additional functions to manipulate roots of unity *)

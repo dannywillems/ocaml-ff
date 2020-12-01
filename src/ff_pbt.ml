@@ -397,6 +397,27 @@ module MakeQuadraticResidue (PrimeField : Ff_sig.PRIME) = struct
           (repeat ~n:1000 test_is_quadratic_residue) ] )
 end
 
+module MakeSquareRoot (PrimeField : Ff_sig.PRIME) = struct
+  let test_square_root_on_random () =
+    let r = PrimeField.random () in
+    let res = Option.get @@ PrimeField.(sqrt_opt (square r)) in
+    let res_neg =
+      Option.get @@ PrimeField.(sqrt_opt ~opposite:true (square r))
+    in
+    assert (PrimeField.(res = r || res = negate r)) ;
+    assert (PrimeField.(res_neg = r || res_neg = negate r))
+
+  let get_tests () =
+    let open Alcotest in
+    ( Printf.sprintf
+        "Square root on finite field of order %s"
+        (Z.to_string PrimeField.order),
+      [ test_case
+          "With random elements and using its square"
+          `Quick
+          (repeat ~n:1000 test_square_root_on_random) ] )
+end
+
 module MakeAll (FiniteField : Ff_sig.BASE) = struct
   module ValueGeneration = MakeValueGeneration (FiniteField)
   module IsZero = MakeIsZero (FiniteField)
