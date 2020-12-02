@@ -144,6 +144,7 @@ end) : PRIME_WITH_ROOT_OF_UNITY = struct
           let x = square x in
           if is_one x then i
           else if i = upper then failwith "Upperbound should be higher"
+            (* should never happen in this case, just being explicit *)
           else compute_lowest_n_2th_root_of_unity (i + 1) x upper
         in
         let z = pick_non_square () in
