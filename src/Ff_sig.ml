@@ -138,7 +138,9 @@ module type PRIME = sig
       integers *)
   val to_z : t -> Z.t
 
-  (** Returns the Legendre symbol of the parameter *)
+  (** Returns the Legendre symbol of the parameter. Note it does not work for
+      [p = 2]
+  *)
   val legendre_symbol : t -> Z.t
 
   (** [is_quadratic_residue x] returns [true] if [x] is a quadratic residue i.e.
