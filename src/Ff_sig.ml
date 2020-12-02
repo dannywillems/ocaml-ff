@@ -116,6 +116,9 @@ end
 module type PRIME = sig
   include BASE
 
+  (** Returns [s, q] such that [order - 1 = 2^s * q] *)
+  val factor_power_of_two : int * Z.t
+
   (** Create a value t from a predefined string representation. It is not
       required that to_string of_string t = t. By default, decimal
       representation of the number is used, modulo the order of the field *)
@@ -135,10 +138,18 @@ module type PRIME = sig
       integers *)
   val to_z : t -> Z.t
 
+  (** Returns the Legendre symbol of the parameter. Note it does not work for
+      [p = 2]
+  *)
+  val legendre_symbol : t -> Z.t
+
   (** [is_quadratic_residue x] returns [true] if [x] is a quadratic residue i.e.
       if there exists [n] such that [n^2 mod p = 1]
   *)
   val is_quadratic_residue : t -> bool
+
+  (** [sqrt_opt x] returns a square root of [x] *)
+  val sqrt_opt : t -> t option
 end
 
 (** Module type for prime field with additional functions to manipulate roots of unity *)

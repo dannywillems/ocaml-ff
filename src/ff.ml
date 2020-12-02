@@ -9,6 +9,15 @@ end) : PRIME_WITH_ROOT_OF_UNITY = struct
     assert (S.prime_order >= Z.of_string "2") ;
     S.prime_order
 
+  let two_z = Z.succ Z.one
+
+  let factor_power_of_two =
+    let rec aux i n =
+      let (q, r) = Z.ediv_rem n two_z in
+      if Z.equal r Z.zero then aux (i + 1) q else (i, n)
+    in
+    aux 0 (Z.pred order)
+
   let log256 n = log n /. log 256.
 
   let size_in_bytes = int_of_float (log256 (Z.to_float order)) + 1
@@ -40,19 +49,11 @@ end) : PRIME_WITH_ROOT_OF_UNITY = struct
 
   let add a b = Z.erem (Z.add a b) order
 
-  let ( + ) = add
-
   let mul a b = Z.erem (Z.mul a b) order
-
-  let ( * ) = mul
 
   let eq a b = Z.equal (Z.erem a order) (Z.erem b order)
 
-  let ( = ) = eq
-
   let negate a = Z.sub order a
-
-  let ( - ) = negate
 
   let inverse_exn a =
     if a = zero then raise Division_by_zero else Z.invert a order
@@ -65,21 +66,15 @@ end) : PRIME_WITH_ROOT_OF_UNITY = struct
 
   let div_opt a b = if b = zero then None else Some (mul a (inverse_exn b))
 
-  let ( / ) = div_exn
-
-  let square x = Z.mul x x
+  let square x = mul x x
 
   let double x = Z.add x x
-
-  let two_z = Z.succ Z.one
 
   let rec pow x n =
     if Z.equal n Z.zero then one
     else if is_zero x then zero
     else if Z.equal n Z.one then x
     else Z.powm x n order
-
-  let ( ** ) = pow
 
   (* Decimal representation by default *)
   let of_string s = Z.erem (Z.of_string s) order
@@ -122,9 +117,64 @@ end) : PRIME_WITH_ROOT_OF_UNITY = struct
 
   let of_z t = Z.erem t order
 
+  let legendre_symbol x =
+    if is_zero x then Z.zero
+    else if is_one (pow x (Z.divexact (Z.pred order) (Z.of_int 2))) then Z.one
+    else Z.neg Z.one
+
   let is_quadratic_residue x =
-    if is_zero x then true
-    else is_one (pow x (Z.divexact (Z.pred order) (Z.of_int 2)))
+    if is_zero x then true else is_one (legendre_symbol x)
+
+  let rec pick_non_square () =
+    let z = random () in
+    if Z.equal (legendre_symbol z) (Z.of_int (-1)) then z
+    else pick_non_square ()
+
+  let sqrt_opt x =
+    if not (is_quadratic_residue x) then None
+    else
+      (* https://en.wikipedia.org/wiki/Tonelli%E2%80%93Shanks_algorithm *)
+      let (s, q) = factor_power_of_two in
+      (* implies p = 3 mod 4 *)
+      if s = 1 then
+        (* r = x^((p + 1) / 4) *)
+        let r = pow x (Z.divexact (Z.succ order) (Z.of_string "4")) in
+        Some r
+      else
+        let rec compute_lowest_n_2th_root_of_unity i x upper =
+          let x = square x in
+          if is_one x then i
+          else if i = upper then failwith "Upperbound should be higher"
+            (* should never happen in this case, just being explicit *)
+          else compute_lowest_n_2th_root_of_unity (i + 1) x upper
+        in
+        let z = pick_non_square () in
+        let c = pow z q in
+        let rec aux m c t r =
+          if eq t zero then zero (* case x is zero *)
+          else if eq t one then r (* base case *)
+          else
+            let i = compute_lowest_n_2th_root_of_unity 1 t m in
+            let b = pow c (Z.pow two_z (m - i - 1)) in
+            let m = i in
+            let c = mul b b in
+            let t = mul t c in
+            let r = mul r b in
+            aux m c t r
+        in
+        Some (aux s c (pow x q) (pow x (Z.divexact (Z.succ q) two_z)))
+
+  let ( + ) = add
+
+  let ( * ) = mul
+
+  let ( - ) = negate
+
+  let ( ** ) = pow
+
+  let ( = ) = eq
+
+  let ( / ) = div_exn
 end
 
 module MakeFp2
@@ -173,8 +223,6 @@ end = struct
 
   let add (x1, y1) (x2, y2) = (Fp.(x1 + x2), Fp.(y1 + y2))
 
-  let ( + ) = add
-
   let mul (x1, y1) (x2, y2) =
     let open Fp in
     let tmp_x = x1 * x2 in
@@ -183,15 +231,9 @@ end = struct
     let y' = (x1 * y2) + (y1 * x2) in
     (x', y')
 
-  let ( * ) = mul
-
   let eq (x1, y1) (x2, y2) = Fp.(x1 = x2 && y1 = y2)
 
-  let ( = ) = eq
-
   let negate (x, y) = (Fp.negate x, Fp.negate y)
-
-  let ( - ) = negate
 
   let aux_inverse (x, y) =
     (* Let's use square in case of `*` is not optimised for the square case *)
@@ -215,8 +257,6 @@ end = struct
 
   let div_opt a b = if b = zero then None else Some (mul a (inverse_exn b))
 
-  let ( / ) = div_exn
-
   let square (a, b) =
     let ab = Fp.(a * b) in
     Fp.
@@ -239,8 +279,6 @@ end = struct
       let acc = pow x a in
       let acc_square = mul acc acc in
       if Z.equal r Z.zero then acc_square else mul acc_square x
-
-  let ( ** ) = pow
 
   (** From a predefined bytes representation, construct a value t. It is not
       required that to_bytes (of_bytes_exn t)) = t. By default, little endian
@@ -281,4 +319,16 @@ end = struct
       (Int.div size_in_bytes 2)
       (Int.div size_in_bytes 2) ;
     b
+
+  let ( + ) = add
+
+  let ( * ) = mul
+
+  let ( - ) = negate
+
+  let ( ** ) = pow
+
+  let ( = ) = eq
+
+  let ( / ) = div_exn
 end

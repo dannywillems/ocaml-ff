@@ -1,4 +1,5 @@
 _build
 _opam
-ff.install
+*.install
 .merlin
+_coverage

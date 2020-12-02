@@ -3,6 +3,7 @@ stages:
   - build
   - benchmark
   - doc
+  - coverage
   - deploy
 
 lint:
@@ -92,7 +93,6 @@ benchmark-ocaml-4.09:
   <<: *benchmark_definition
   image: ocaml/opam2:4.09
 
-# Build the documentation, but do not publish
 doc:
   stage: doc
   image: ocaml/opam2:4.09
@@ -101,33 +101,57 @@ doc:
     - eval $(opam env)
     - opam repository set-url default https://opam.ocaml.org
     - opam update
-    - sudo apt-get install m4 -y
     - opam depext -i -y zarith
+    - sudo apt-get install m4 -y
     - opam install odoc -y
-    - opam install -y .
+    - opam install . -y
   script:
     - dune build @doc
     - cp -r _build/default/_doc/_html odoc/
   artifacts:
     paths:
       - odoc
+
+# Coverage
+coverage:
+  stage: coverage
+  image: ocaml/opam2:4.10
   rules:
     - when: always
+  before_script:
+    - sudo apt-get install m4 -y
+    - eval $(opam env)
+    - opam repository set-url default https://opam.ocaml.org
+    - opam update
+    - opam depext -i -y zarith
+    - opam install -y --with-test .
+  script:
+    - dune runtest --instrument-with bisect_ppx --force
+    - bisect-ppx-report html
+
+# # FIXME: does not seem to work. Getting `Build processing error`.
+# coveralls:
+#   stage: deploy
+#   image: ocaml/opam2:4.10
+#   before_script:
+#     - sudo apt-get install m4 -y
+#     - eval $(opam env)
+#     - opam repository set-url default https://opam.ocaml.org
+#     - opam update
+#     - opam depext -i -y zarith
+#     - opam install -y --with-test .
+#   script:
+#     # Generate the coverage.json file. It is simply a JSON file used to post.
+#     - bisect-ppx-report coveralls coverage.json --service-name gitlab-ci --service-job-id $CI_JOB_ID --repo-token ${COVERALLS_REPO_TOKEN}
+#     - curl -L -F json_file=@./coverage.json https://coveralls.io/api/v1/jobs
+#   only:
+#     - merge_requests
+#     - master
 
 pages:
   stage: deploy
   image: ocaml/opam2:4.09
-  before_script:
-    - sudo apt-get update && sudo apt-get upgrade -y
-    - eval $(opam env)
-    - opam repository set-url default https://opam.ocaml.org
-    - opam update
-    - sudo apt-get install m4 -y
-    - opam depext -i -y zarith
-    - opam install odoc -y
-    - opam install . -y
   script:
-    - dune build @doc
     - cp -r _build/default/_doc/_html public/
   artifacts:
     paths:

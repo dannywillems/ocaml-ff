@@ -11,6 +11,7 @@ end)
 
 module F3Tests = Ff_pbt.MakeAll (F3)
 module F3QuadraticResidueTests = Ff_pbt.MakeQuadraticResidue (F3)
+module F3SquareRoot = Ff_pbt.MakeSquareRoot (F3)
 
 module F13 = Ff.MakeFp (struct
   let prime_order = Z.of_string "13"
@@ -18,6 +19,7 @@ end)
 
 module F13Tests = Ff_pbt.MakeAll (F13)
 module F13QuadraticResidueTests = Ff_pbt.MakeQuadraticResidue (F13)
+module F13SquareRootTests = Ff_pbt.MakeSquareRoot (F13)
 
 module F1073740201 = Ff.MakeFp (struct
   let prime_order = Z.of_string "1073740201"
@@ -26,6 +28,7 @@ end)
 module F1073740201Tests = Ff_pbt.MakeAll (F1073740201)
 module F1073740201QuadraticResidueTests =
   Ff_pbt.MakeQuadraticResidue (F1073740201)
+module F1073740201SquareRootTests = Ff_pbt.MakeSquareRoot (F1073740201)
 
 module FFLong = Ff.MakeFp (struct
   let prime_order =
@@ -35,6 +38,7 @@ end)
 
 module FFLongTests = Ff_pbt.MakeAll (FFLong)
 module FFLongQuadraticResidueTests = Ff_pbt.MakeQuadraticResidue (FFLong)
+module FFLongSquareRootTests = Ff_pbt.MakeSquareRoot (FFLong)
 
 (* This is the base field of the Curve 25519, the name comes from its order: p**255 - 19*)
 module FFBaseCurve25519 = Ff.MakeFp (struct
@@ -44,6 +48,7 @@ end)
 module FFBaseCurve25519Tests = Ff_pbt.MakeAll (FFBaseCurve25519)
 module FFBaseCurve25519QuadraticResidueTests =
   Ff_pbt.MakeQuadraticResidue (FFBaseCurve25519)
+module FFBaseCurve25519SquareRootTests = Ff_pbt.MakeSquareRoot (FFBaseCurve25519)
 
 module F13_2 =
   Ff.MakeFp2
@@ -77,16 +82,83 @@ let test_size_in_bytes () =
               assert (P.size_in_bytes = expected_nb_bytes))
             l) ] )
 
+let test_vectors_legendre_symbol () =
+  let open Alcotest in
+  (* Table of value here: https://en.wikipedia.org/wiki/Legendre_symbol *)
+  let test_vectors =
+    [ ("5", "2", "-1");
+      ("17", "1", "1");
+      ("17", "2", "1");
+      ("17", "3", "-1");
+      ("17", "4", "1");
+      ("17", "5", "-1");
+      ("17", "6", "-1");
+      ("17", "7", "-1");
+      ("17", "8", "1");
+      ("2", "1", "1");
+      ("3", "1", "1");
+      ("3", "2", "-1");
+      ("5", "1", "1");
+      ("7", "1", "1");
+      ("97", "1", "1");
+      ("101", "1", "1");
+      ("103", "1", "1");
+      ("103", "17", "1");
+      ("103", "21", "-1");
+      ("103", "22", "-1");
+      ("127", "1", "1") ]
+  in
+  ( "Test legendre symbol result on test vectors",
+    [ test_case "Test vectors" `Quick (fun () ->
+          List.iter
+            (fun (prime_order, v, expected_result) ->
+              let module Fp = Ff.MakeFp (struct
+                let prime_order = Z.of_string prime_order
+              end) in
+              assert (
+                Z.equal
+                  (Fp.legendre_symbol (Fp.of_string v))
+                  (Z.of_string expected_result) ))
+            test_vectors) ] )
+
+let test_vectors_power_of_two () =
+  let open Alcotest in
+  (* Table of value here: https://en.wikipedia.org/wiki/Legendre_symbol *)
+  let test_vectors =
+    [ ("7", (1, "3"));
+      ("13", (2, "3"));
+      ("127", (1, "63"));
+      ("90859051", (1, "45429525")) ]
+  in
+  ( "Test factor in power of two (used for instance for Tonelli Shanks)",
+    [ test_case "Test vectors" `Quick (fun () ->
+          List.iter
+            (fun (prime_order, (expected_s, expected_q)) ->
+              let module Fp = Ff.MakeFp (struct
+                let prime_order = Z.of_string prime_order
+              end) in
+              let (s, q) = Fp.factor_power_of_two in
+              assert (s = expected_s && Z.equal q (Z.of_string expected_q)) ;
+              let res = Z.(mul (pow (Z.succ Z.one) s) q) in
+              assert (Z.(equal res (Z.pred (Z.of_string prime_order)))))
+            test_vectors) ] )
+
 let () =
   let open Alcotest in
   run
     "Random fields"
     ( test_size_in_bytes ()
+      :: test_vectors_legendre_symbol ()
+      :: test_vectors_power_of_two ()
       :: F2QuadraticResidueTests.get_tests ()
       :: F13QuadraticResidueTests.get_tests ()
+      :: F3SquareRoot.get_tests ()
+      :: F13SquareRootTests.get_tests ()
       :: F1073740201QuadraticResidueTests.get_tests ()
+      :: F1073740201SquareRootTests.get_tests ()
       :: FFLongQuadraticResidueTests.get_tests ()
-      :: FFBaseCurve25519QuadraticResidueTests.get_tests ()
+      :: FFLongSquareRootTests.get_tests ()
+      :: FFBaseCurve25519SquareRootTests.get_tests ()
       :: F2Tests.get_tests ()
     @ F3Tests.get_tests () @ F13Tests.get_tests () @ FFLongTests.get_tests ()
     @ FFBaseCurve25519Tests.get_tests ()
