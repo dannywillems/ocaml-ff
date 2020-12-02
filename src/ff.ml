@@ -125,7 +125,10 @@ end) : PRIME_WITH_ROOT_OF_UNITY = struct
   let is_quadratic_residue x =
     if is_zero x then true else is_one (legendre_symbol x)
 
-  let sqrt_opt ?(opposite = false) x =
+  let rec pick_non_square () =
+    let z = random () in
+    if Z.equal (legendre_symbol z) (Z.of_int (-1)) then z
+    else pick_non_square ()
     if not (is_quadratic_residue x) then None
     else
       (* https://en.wikipedia.org/wiki/Tonelli%E2%80%93Shanks_algorithm *)
@@ -135,11 +138,6 @@ end) : PRIME_WITH_ROOT_OF_UNITY = struct
         let r = pow x (Z.divexact (Z.succ order) (Z.of_string "4")) in
         if opposite then Some (negate r) else Some r
       else
-        let rec pick_non_square () =
-          let z = random () in
-          if Z.equal (legendre_symbol z) (Z.of_int (-1)) then z
-          else pick_non_square ()
-        in
         let rec compute_lowest_n_2th_root_of_unity i x upper =
           let x = square x in
           if is_one x then i
