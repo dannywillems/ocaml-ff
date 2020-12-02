@@ -135,6 +135,7 @@ end) : PRIME_WITH_ROOT_OF_UNITY = struct
     else
       (* https://en.wikipedia.org/wiki/Tonelli%E2%80%93Shanks_algorithm *)
       let (s, q) = factor_power_of_two in
+      (* implies p = 3 mod 4 *)
       if s = 1 then
         (* r = x^((p + 1) / 4) *)
         let r = pow x (Z.divexact (Z.succ order) (Z.of_string "4")) in
