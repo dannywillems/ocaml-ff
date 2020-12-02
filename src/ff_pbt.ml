@@ -401,9 +401,7 @@ module MakeSquareRoot (PrimeField : Ff_sig.PRIME) = struct
   let test_square_root_on_random () =
     let r = PrimeField.random () in
     let res = Option.get @@ PrimeField.(sqrt_opt (square r)) in
-    let res_neg =
-      Option.get @@ PrimeField.(sqrt_opt ~opposite:true (square r))
-    in
+    let res_neg = PrimeField.negate res in
     assert (PrimeField.(res = r || res = negate r)) ;
     assert (PrimeField.(res_neg = r || res_neg = negate r))
 
