@@ -281,6 +281,11 @@ module MakeFieldProperties (FiniteField : Ff_sig.BASE) = struct
       FiniteField.eq (FiniteField.pow x (Z.add n order)) (FiniteField.pow x n)
     )
 
+  let sub_definition () =
+    let x = FiniteField.random () in
+    let y = FiniteField.random () in
+    assert (FiniteField.(sub x y = add x (negate y)))
+
   let get_tests () =
     let open Alcotest in
     ( Printf.sprintf
@@ -349,6 +354,7 @@ module MakeFieldProperties (FiniteField : Ff_sig.BASE) = struct
         test_case "opposite property" `Quick (repeat opposite_property);
         test_case "inverse property" `Quick (repeat inverse_property);
         test_case "pow addition property" `Quick (repeat pow_addition_property);
+        test_case "sub definition" `Quick (repeat sub_definition);
         test_case
           "multiplicative_associativity"
           `Quick
