@@ -44,6 +44,9 @@ module type BASE = sig
   (** Infix operator for [add] *)
   val ( + ) : t -> t -> t
 
+  (** [sub a b] returns [a - b mod order] *)
+  val sub : t -> t -> t
+
   (** [mul a b] returns [a * b mod order] *)
   val mul : t -> t -> t
 

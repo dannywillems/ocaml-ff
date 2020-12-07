@@ -49,6 +49,8 @@ end) : PRIME_WITH_ROOT_OF_UNITY = struct
 
   let add a b = Z.erem (Z.add a b) order
 
+  let sub a b = Z.erem (Z.sub a b) order
+
   let mul a b = Z.erem (Z.mul a b) order
 
   let eq a b = Z.equal (Z.erem a order) (Z.erem b order)
@@ -234,6 +236,8 @@ end = struct
   let eq (x1, y1) (x2, y2) = Fp.(x1 = x2 && y1 = y2)
 
   let negate (x, y) = (Fp.negate x, Fp.negate y)
+
+  let sub a b = add a (negate b)
 
   let aux_inverse (x, y) =
     (* Let's use square in case of `*` is not optimised for the square case *)
