@@ -27,6 +27,10 @@ dune-release-distrib:
     - opam depext -i -y conf-m4
     - opam install dune-release.1.4.0 -y
     - opam depext -i -y zarith
+    - opam pin add ff-sig.dev ./ --no-action
+    - opam pin add ff.dev ./ --no-action
+    - opam pin add ff-pbt.dev ./ --no-action
+    - opam pin add ff-bench.dev ./ --no-action
     - opam install . -y
   script:
     - dune-release distrib
