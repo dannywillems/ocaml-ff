@@ -1,5 +1,7 @@
 ### Unreleased
 
+### 0.6.1
+
 #### Changes
 
 * Add ff-bench
