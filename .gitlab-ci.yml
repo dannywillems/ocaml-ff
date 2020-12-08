@@ -1,39 +1,15 @@
 stages:
-  - lint
   - build
+  - lint
   - doc
   - coverage
   - deploy
 
-lint:
-  stage: lint
-  image: registry.gitlab.com/dannywillems/docker-ocamlformat:0.15.0
-  before_script:
-    - eval $(opam env)
-  script:
-    - ocamlformat --check js/*.ml*
-    - ocamlformat --check src/*.ml*
-    - ocamlformat --check test/*.ml*
-  rules:
-    - when: always
-
-dune-release-distrib:
-  image: ocaml/opam2:4.11
-  stage: lint
-  before_script:
-    - sudo chown -R opam. .
-    - opam repository set-url default https://opam.ocaml.org
-    - opam update
-    - opam depext -i -y conf-m4
-    - opam install dune-release.1.4.0 -y
-    - opam depext -i -y zarith
-    - opam pin add ff-sig.dev ./ --no-action
-    - opam pin add ff.dev ./ --no-action
-    - opam pin add ff-pbt.dev ./ --no-action
-    - opam pin add ff-bench.dev ./ --no-action
-    - opam install . -y
-  script:
-    - dune-release distrib
+cache: &cache
+  key: opam
+  paths:
+    - $HOME/.opam/
+  policy: pull-push
 
 .build-test: &build_definition
   stage: build
@@ -67,6 +43,8 @@ dune-release-distrib:
     - node js/test/test_js.js
   rules:
     - when: always
+  cache:
+    <<: *cache
 
 # OCaml 4.08
 build-ocaml-4.08:
@@ -88,24 +66,43 @@ build-ocaml-4.11:
   <<: *build_definition
   image: ocaml/opam2:4.11
 
+lint:
+  stage: lint
+  image: registry.gitlab.com/dannywillems/docker-ocamlformat:0.15.0
+  before_script:
+    - eval $(opam env)
+  script:
+    - opam config env
+    - ocamlformat --check js/*.ml*
+    - ocamlformat --check src/*.ml*
+    - ocamlformat --check test/*.ml*
+  rules:
+    - when: always
+
+dune-release-distrib:
+  image: ocaml/opam2:4.11
+  stage: lint
+  before_script:
+    - sudo chown -R opam. .
+    - opam install dune-release.1.4.0 -y
+  script:
+    - dune-release distrib
+  cache:
+    <<: *cache
+
 doc:
   stage: doc
-  image: ocaml/opam2:4.09
+  image: ocaml/opam2:4.10
   before_script:
-    - sudo apt-get update && sudo apt-get upgrade -y
-    - eval $(opam env)
-    - opam repository set-url default https://opam.ocaml.org
-    - opam update
-    - opam depext -i -y zarith
-    - sudo apt-get install m4 -y
     - opam install odoc -y
-    - opam install . -y
   script:
     - dune build @doc
     - cp -r _build/default/_doc/_html _odoc/
   artifacts:
     paths:
       - _odoc
+  cache:
+    <<: *cache
 
 # Coverage
 coverage:
@@ -113,16 +110,11 @@ coverage:
   image: ocaml/opam2:4.10
   rules:
     - when: always
-  before_script:
-    - sudo apt-get install m4 -y
-    - eval $(opam env)
-    - opam repository set-url default https://opam.ocaml.org
-    - opam update
-    - opam depext -i -y zarith
-    - opam install -y --with-test .
   script:
     - dune runtest --instrument-with bisect_ppx --force
     - bisect-ppx-report html
+  cache:
+    <<: *cache
 
 # # FIXME: does not seem to work. Getting `Build processing error`.
 # coveralls:
@@ -153,3 +145,5 @@ pages:
       - public
   rules:
     - if: '$CI_COMMIT_BRANCH == "master"'
+  cache:
+    <<: *cache
