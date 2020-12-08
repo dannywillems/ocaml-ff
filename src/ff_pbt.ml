@@ -1,3 +1,5 @@
+let max_output_alcotest = 100
+
 let rec repeat ?(n = 100) f =
   if n <= 0 then
     let f () = () in
@@ -50,10 +52,13 @@ module MakeValueGeneration (FiniteField : Ff_sig.BASE) = struct
     assert (FiniteField.eq (FiniteField.double g) (FiniteField.add g g))
 
   let get_tests () =
-    let open Alcotest in
-    ( Printf.sprintf
+    let txt =
+      Printf.sprintf
         "Value generation for field of order %s"
-        (Z.to_string FiniteField.order),
+        (Z.to_string FiniteField.order)
+    in
+    let open Alcotest in
+    ( String.sub txt 0 (min (String.length txt) max_output_alcotest),
       [ test_case "zero" `Quick (repeat zero);
         test_case "random" `Quick (repeat random);
         test_case "non null random" `Quick (repeat ~n:100 non_null_random);
@@ -85,10 +90,13 @@ module MakeIsZero (FiniteField : Ff_sig.BASE) = struct
     else assert (FiniteField.is_zero x = false)
 
   let get_tests () =
-    let open Alcotest in
-    ( Printf.sprintf
+    let txt =
+      Printf.sprintf
         "is_zero for field of order %s"
-        (Z.to_string FiniteField.order),
+        (Z.to_string FiniteField.order)
+    in
+    let open Alcotest in
+    ( String.sub txt 0 (min (String.length txt) max_output_alcotest),
       [ test_case "with zero value" `Quick (repeat with_zero_value);
         test_case "with random value" `Quick (repeat with_random_value) ] )
 end
@@ -105,10 +113,13 @@ module MakeEquality (FiniteField : Ff_sig.BASE) = struct
     assert (FiniteField.eq random random)
 
   let get_tests () =
-    let open Alcotest in
-    ( Printf.sprintf
+    let txt =
+      Printf.sprintf
         "Equality for field of order %s"
-        (Z.to_string FiniteField.order),
+        (Z.to_string FiniteField.order)
+    in
+    let open Alcotest in
+    ( String.sub txt 0 (min (String.length txt) max_output_alcotest),
       [ test_case "zero_same_objects" `Quick (repeat zero_same_objects);
         test_case "one_same_objects" `Quick (repeat one_same_objects);
         test_case "random_same_objects" `Quick (repeat random_same_objects) ] )
@@ -287,10 +298,13 @@ module MakeFieldProperties (FiniteField : Ff_sig.BASE) = struct
     assert (FiniteField.(sub x y = add x (negate y)))
 
   let get_tests () =
-    let open Alcotest in
-    ( Printf.sprintf
+    let txt =
+      Printf.sprintf
         "Field properties for field of order %s"
-        (Z.to_string FiniteField.order),
+        (Z.to_string FiniteField.order)
+    in
+    let open Alcotest in
+    ( String.sub txt 0 (min (String.length txt) max_output_alcotest),
       [ test_case "zero_nullifier_one" `Quick (repeat zero_nullifier_one);
         test_case "zero_nullifier_zero" `Quick (repeat zero_nullifier_zero);
         test_case "zero_nullifier_random" `Quick (repeat zero_nullifier_random);
@@ -373,10 +387,13 @@ module MakeMemoryRepresentation (FiniteField : Ff_sig.BASE) = struct
     assert (FiniteField.eq x (FiniteField.of_bytes_exn x_bytes))
 
   let get_tests () =
-    let open Alcotest in
-    ( Printf.sprintf
+    let txt =
+      Printf.sprintf
         "Memory representation for field of order %s"
-        (Z.to_string FiniteField.order),
+        (Z.to_string FiniteField.order)
+    in
+    let open Alcotest in
+    ( String.sub txt 0 (min (String.length txt) max_output_alcotest),
       [ test_case
           "to_bytes returns the correct number of bytes"
           `Quick
@@ -393,10 +410,13 @@ module MakeQuadraticResidue (PrimeField : Ff_sig.PRIME) = struct
     assert (PrimeField.(is_quadratic_residue (r * r)))
 
   let get_tests () =
-    let open Alcotest in
-    ( Printf.sprintf
+    let txt =
+      Printf.sprintf
         "Quadratic residue tests for prime field of order %s"
-        (Z.to_string PrimeField.order),
+        (Z.to_string PrimeField.order)
+    in
+    let open Alcotest in
+    ( String.sub txt 0 (min (String.length txt) max_output_alcotest),
       [ test_case
           "With random elements and using its square"
           `Quick
@@ -412,10 +432,13 @@ module MakeSquareRoot (PrimeField : Ff_sig.PRIME) = struct
     assert (PrimeField.(res_neg = r || res_neg = negate r))
 
   let get_tests () =
-    let open Alcotest in
-    ( Printf.sprintf
+    let txt =
+      Printf.sprintf
         "Square root on finite field of order %s"
-        (Z.to_string PrimeField.order),
+        (Z.to_string PrimeField.order)
+    in
+    let open Alcotest in
+    ( String.sub txt 0 (min (String.length txt) 100),
       [ test_case
           "With random elements and using its square"
           `Quick
