@@ -72,3 +72,16 @@ let () =
 ```
 
 It is stronly relying on the `random` function implemented by the finite field module.
+
+## Benchmark
+
+`ff-bench` is a benchmark library (using `Core_bench`) for finite fields, respecting the signature `Ff_sig.BASE`.
+Here how to use:
+
+```ocaml
+module F337 = Ff.Make (struct let prime_order = Z.of_string "337" end)
+module Bench = Ff_bench.MakeBench (F337)
+let () =
+  let commands = Bench.get_benches "F337" in
+  Core.Command.run (Core.Bench.make_command commands)
+```

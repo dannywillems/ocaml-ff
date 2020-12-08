@@ -1,4 +1,11 @@
-### unreleased
+### Unreleased
+
+#### Changes
+
+* Add ff-bench
+* Trunk test names to 100 characters to avoid ENAMETOOLONG error raised by alcotest
+
+### 0.6.0
 
 #### Changes
 

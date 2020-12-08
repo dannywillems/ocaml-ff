@@ -20,3 +20,10 @@
  (modules ff_pbt)
  (libraries ff-sig zarith alcotest)
 )
+
+(library
+ (public_name ff-bench)
+ (name ff_bench)
+ (modules ff_bench)
+ (libraries ff-sig core_bench core)
+)
