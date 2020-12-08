@@ -47,9 +47,13 @@ dune-release-distrib:
     - nvm install 12.16.1
     - nvm use 12.16.1
   script:
+    - opam pin add ff-sig.dev ./ --no-action
+    - opam pin add ff.dev ./ --no-action
+    - opam pin add ff-pbt.dev ./ --no-action
+    - opam pin add ff-bench.dev ./ --no-action
     - opam install --deps-only --with-test -y .
     # Install the package
-    - opam install .
+    - opam install -y .
     # Run tests
     - dune build @runtest
     # js_of_ocaml compatibility
