@@ -70,7 +70,7 @@ end) : PRIME_WITH_ROOT_OF_UNITY = struct
 
   let square x = mul x x
 
-  let double x = Z.add x x
+  let double x = add x x
 
   let rec pow x n =
     if Z.equal n Z.zero then one
