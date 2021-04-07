@@ -55,7 +55,7 @@ end) : PRIME_WITH_ROOT_OF_UNITY = struct
 
   let eq a b = Z.equal (Z.erem a order) (Z.erem b order)
 
-  let negate a = Z.sub order a
+  let negate a = sub order a
 
   let inverse_exn a =
     if a = zero then raise Division_by_zero else Z.invert a order
