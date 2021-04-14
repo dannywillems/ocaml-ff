@@ -3,3 +3,4 @@ _opam
 *.install
 .merlin
 _coverage
+coverage-raw.json
