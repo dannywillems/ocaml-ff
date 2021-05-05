@@ -96,21 +96,25 @@ module type BASE = sig
   (** Infix operator for [pow] *)
   val ( ** ) : t -> Z.t -> t
 
-  (** From a predefined bytes representation, construct a value t. It is not
-      required that to_bytes of_bytes_exn t = t.
+  (** Construct a value of type [t] from the bytes representation in little
+      endian of the field element. For non prime fields, the encoding starts
+      with the coefficient of the constant monomial.
       Raise [Not_in_field] if the bytes do not represent an element in the field.
   *)
   val of_bytes_exn : Bytes.t -> t
 
-  (** From a predefined bytes representation, construct a value t. It is not
-      required that to_bytes (Option.get (of_bytes_opt t)) = t. By default, little endian encoding
-      is used and the given element is modulo the prime order *)
+  (** From a predefined little endian bytes representation, construct a value of type [t].
+      The same representation than [of_bytes_exn] is used.
+      Return [None] if the bytes do not represent an element in the field.
+  *)
   val of_bytes_opt : Bytes.t -> t option
 
-  (** Convert the value t to a bytes representation which can be used for
-      hashing for instance. It is not required that to_bytes of_bytes_exn t = t. By
-      default, little endian encoding is used, and length of the resulting bytes
-      may vary depending on the order.
+  (** Convert the value t to a bytes representation.
+      The number of bytes is [size_in_bytes] and the
+      encoding must be in little endian. For instance, the encoding of [1] in prime fields is
+      always a bytes sequence of size [size_in_bytes] starting with the byte
+      [0b00000001]. For non prime fields, the encoding starts
+      with the coefficient of the constant monomial.
   *)
   val to_bytes : t -> Bytes.t
 end

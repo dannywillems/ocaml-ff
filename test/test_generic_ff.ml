@@ -59,6 +59,46 @@ module F13_2 =
 
 module F13_2Tests = Ff_pbt.MakeAll (F13_2)
 
+let test_encoding_is_in_little_endian () =
+  let open Alcotest in
+  ( "Test to_bytes returns the little endian encoding",
+    [ test_case "Test vectors with small Fp (13)" `Quick (fun () ->
+          let module Fp = Ff.MakeFp (struct
+            let prime_order = Z.of_string "13"
+          end) in
+          let test_vectors =
+            [ ("1", [0b00000001]);
+              ("0", [0b00000000]);
+              ("13", [0b00000000]);
+              ("14", [0b00000001]) ]
+          in
+          List.iter
+            (fun (v, expected_bytes) ->
+              let expected_bytes =
+                Bytes.init (List.length expected_bytes) (fun i ->
+                    char_of_int (List.nth expected_bytes i))
+              in
+              assert (Bytes.equal Fp.(to_bytes (of_string v)) expected_bytes))
+            test_vectors);
+      test_case "Test vectors with Fp on two bytes (509)" `Quick (fun () ->
+          let module Fp = Ff.MakeFp (struct
+            let prime_order = Z.of_string "509"
+          end) in
+          let test_vectors =
+            [ ("1", [0b00000001; 0b00000000]);
+              ("0", [0b00000000; 0b00000000]);
+              ("13", [0b00001101; 0b00000000]);
+              ("509", [0b00000000; 0b00000000]) ]
+          in
+          List.iter
+            (fun (v, expected_bytes) ->
+              let expected_bytes =
+                Bytes.init (List.length expected_bytes) (fun i ->
+                    char_of_int (List.nth expected_bytes i))
+              in
+              assert (Bytes.equal Fp.(to_bytes (of_string v)) expected_bytes))
+            test_vectors) ] )
+
 let test_size_in_bytes () =
   let open Alcotest in
   ( "Test size in bytes computation for different orders",
@@ -148,6 +188,7 @@ let () =
   run
     "Random fields"
     ( test_size_in_bytes ()
+      :: test_encoding_is_in_little_endian ()
       :: test_vectors_legendre_symbol ()
       :: test_vectors_power_of_two ()
       :: F2QuadraticResidueTests.get_tests ()
