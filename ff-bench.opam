@@ -3,7 +3,6 @@ name: "ff-bench"
 authors: [ "Danny Willems <be.danny.willems@gmail.com>" ]
 maintainer: [ "Danny Willems <be.danny.willems@gmail.com>" ]
 synopsis: "Benchmark library for finite fields over the package ff-sig"
-description: "Benchmark library for finite fields over the package ff-sig"
 homepage: "https://gitlab.com/dannywillems/ocaml-ff"
 dev-repo: "git+https://gitlab.com/dannywillems/ocaml-ff.git"
 bug-reports: "https://gitlab.com/dannywillems/ocaml-ff/issues"
