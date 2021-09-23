@@ -423,6 +423,29 @@ module MakeQuadraticResidue (PrimeField : Ff_sig.PRIME) = struct
           (repeat ~n:1000 test_is_quadratic_residue) ] )
 end
 
+module MakeRootOfUnity (PrimeField : Ff_sig.PRIME_WITH_ROOT_OF_UNITY) = struct
+  let test_get_nth_root_of_unity_is_consistent_with_is_nth_root_of_unity () =
+    let pred_order = Z.pred PrimeField.order in
+    let n = Z.(ediv pred_order (one + one)) in
+    assert (PrimeField.(is_nth_root_of_unity n (get_nth_root_of_unity n)))
+
+  let get_tests () =
+    let txt =
+      Printf.sprintf
+        "Root of unity tests for prime field of order %s"
+        (Z.to_string PrimeField.order)
+    in
+    let open Alcotest in
+    ( String.sub txt 0 (min (String.length txt) max_output_alcotest),
+      [ test_case
+          "get_nth_root_of_unity is consistent with is_nth_root_of_unity"
+          `Quick
+          (repeat
+             ~n:1000
+             test_get_nth_root_of_unity_is_consistent_with_is_nth_root_of_unity)
+      ] )
+end
+
 module MakeSquareRoot (PrimeField : Ff_sig.PRIME) = struct
   let test_square_root_on_random () =
     let r = PrimeField.random () in
