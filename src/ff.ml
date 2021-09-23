@@ -101,19 +101,18 @@ end) : PRIME_WITH_ROOT_OF_UNITY = struct
     Bytes.blit b 0 res 0 (min (Bytes.length b) size_in_bytes) ;
     res
 
-  let rec get_nth_root_of_unity n =
-    if not (Z.equal (Z.erem (Z.pred order) n) Z.zero) then
-      failwith "n must divide the order of the multiplicate group"
-    else
-      let r = random () in
-      if (not (eq r zero)) && eq (pow (pow r (Z.div (Z.pred order) n)) n) one
-      then r
-      else get_nth_root_of_unity n
+  let is_nth_root_of_unity n x = (not (eq x zero)) && is_one (pow x n)
 
-  let is_nth_root_of_unity n x =
-    if not (Z.equal (Z.erem (Z.pred order) n) Z.zero) then
-      failwith "n must divide the order of the multiplicate group"
-    else (not (eq x zero)) && eq (pow (pow x (Z.div (Z.pred order) n)) n) one
+  let rec get_nth_root_of_unity n =
+    let pred_order = Z.pred order in
+    if Z.gt n pred_order || not (Z.(erem pred_order n) = zero) then
+      failwith "n must divide the order of the multiplication subgroup"
+    else
+      let rec aux () =
+        let r = random () in
+        if is_nth_root_of_unity n r then r else aux ()
+      in
+      aux ()
 
   let to_z t = t
 

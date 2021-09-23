@@ -12,6 +12,7 @@ end)
 module F3Tests = Ff_pbt.MakeAll (F3)
 module F3QuadraticResidueTests = Ff_pbt.MakeQuadraticResidue (F3)
 module F3SquareRoot = Ff_pbt.MakeSquareRoot (F3)
+module F3RootOfUnity = Ff_pbt.MakeRootOfUnity (F3)
 
 module F13 = Ff.MakeFp (struct
   let prime_order = Z.of_string "13"
@@ -20,6 +21,7 @@ end)
 module F13Tests = Ff_pbt.MakeAll (F13)
 module F13QuadraticResidueTests = Ff_pbt.MakeQuadraticResidue (F13)
 module F13SquareRootTests = Ff_pbt.MakeSquareRoot (F13)
+module F13RootOfUnity = Ff_pbt.MakeRootOfUnity (F13)
 
 module F1073740201 = Ff.MakeFp (struct
   let prime_order = Z.of_string "1073740201"
@@ -29,6 +31,7 @@ module F1073740201Tests = Ff_pbt.MakeAll (F1073740201)
 module F1073740201QuadraticResidueTests =
   Ff_pbt.MakeQuadraticResidue (F1073740201)
 module F1073740201SquareRootTests = Ff_pbt.MakeSquareRoot (F1073740201)
+module F1073740201RootOfUnity = Ff_pbt.MakeRootOfUnity (F1073740201)
 
 module FFLong = Ff.MakeFp (struct
   let prime_order =
@@ -39,6 +42,45 @@ end)
 module FFLongTests = Ff_pbt.MakeAll (FFLong)
 module FFLongQuadraticResidueTests = Ff_pbt.MakeQuadraticResidue (FFLong)
 module FFLongSquareRootTests = Ff_pbt.MakeSquareRoot (FFLong)
+module FFLongRootOfUnity = Ff_pbt.MakeRootOfUnity (FFLong)
+
+(* module ScalarFieldBLS12_381Tests = Ff_pbt.MakeAll (ScalarFieldBLS12_381) *)
+
+module ScalarFieldBLS12_381UnitTest_RootOfUnity = struct
+  module ScalarFieldBLS12_381 = Ff.MakeFp (struct
+    let prime_order =
+      Z.of_string
+        "52435875175126190479447740508185965837690552500527637822603658699938581184513"
+  end)
+
+  let test_vectors () =
+    let vectors =
+      [ ( "45578933624873246016802258050230213493140367389966312656957679049059636081617",
+          1 lsl 16 );
+        ( "15076889834420168339092859836519192632846122361203618639585008852351569017005",
+          1 lsl 16 );
+        ( "21584124886548760190346392867028830688912556631271990304491841940743921295609",
+          1 lsl 32 );
+        ( "27611812781829920551290133267575249478648871281233506899293410857719571783635",
+          1 lsl 8 );
+        ( "16624801632831727463500847948913128838752380757508923660793891075002624508302",
+          1 lsl 4 ) ]
+    in
+    List.iter
+      (fun (x, n) ->
+        assert (
+          ScalarFieldBLS12_381.is_nth_root_of_unity
+            (Z.of_int n)
+            (ScalarFieldBLS12_381.of_string x) ))
+      vectors
+
+  let get_tests () =
+    let txt =
+      "Test vectors for is_nth_root_of_unity for BLS12-381 scalar field"
+    in
+    let open Alcotest in
+    (txt, [test_case "Test vectors" `Quick test_vectors])
+end
 
 (* This is the base field of the Curve 25519, the name comes from its order: p**255 - 19*)
 module FFBaseCurve25519 = Ff.MakeFp (struct
@@ -193,13 +235,17 @@ let () =
       :: test_vectors_power_of_two ()
       :: F2QuadraticResidueTests.get_tests ()
       :: F13QuadraticResidueTests.get_tests ()
-      :: F3SquareRoot.get_tests ()
+      :: F3SquareRoot.get_tests () :: F3RootOfUnity.get_tests ()
       :: F13SquareRootTests.get_tests ()
+      :: F13RootOfUnity.get_tests ()
       :: F1073740201QuadraticResidueTests.get_tests ()
       :: F1073740201SquareRootTests.get_tests ()
+      :: F1073740201RootOfUnity.get_tests ()
       :: FFLongQuadraticResidueTests.get_tests ()
+      :: FFLongRootOfUnity.get_tests ()
       :: FFLongSquareRootTests.get_tests ()
       :: FFBaseCurve25519SquareRootTests.get_tests ()
+      :: ScalarFieldBLS12_381UnitTest_RootOfUnity.get_tests ()
       :: F2Tests.get_tests ()
     @ F3Tests.get_tests () @ F13Tests.get_tests () @ FFLongTests.get_tests ()
     @ FFBaseCurve25519Tests.get_tests ()
