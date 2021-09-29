@@ -49,15 +49,9 @@ end) : PRIME_WITH_ROOT_OF_UNITY = struct
 
   let add a b = Z.erem (Z.add a b) order
 
-  let add_noalloc _dst _a _b = ()
-
   let sub a b = Z.erem (Z.sub a b) order
 
-  let sub_noalloc _dst _a _b = ()
-
   let mul a b = Z.erem (Z.mul a b) order
-
-  let mul_noalloc _dst _a _b = ()
 
   let eq a b = Z.equal (Z.erem a order) (Z.erem b order)
 
@@ -171,6 +165,14 @@ end) : PRIME_WITH_ROOT_OF_UNITY = struct
             aux m c t r
         in
         Some (aux s c (pow x q) (pow x (Z.divexact (Z.succ q) two_z)))
+
+  let supports_noalloc = false
+
+  let add_noalloc _dst _a _b = failwith "add_noalloc not supported"
+
+  let mul_noalloc _dst _a _b = failwith "mul_noalloc not supported"
+
+  let sub_noalloc _dst _a _b = failwith "sub_noalloc not supported"
 
   let ( + ) = add
 
@@ -335,6 +337,14 @@ end = struct
       (Int.div size_in_bytes 2)
       (Int.div size_in_bytes 2) ;
     b
+
+  let supports_noalloc = false
+
+  let add_noalloc _dst _a _b = failwith "add_noalloc not supported"
+
+  let mul_noalloc _dst _a _b = failwith "mul_noalloc not supported"
+
+  let sub_noalloc _dst _a _b = failwith "sub_noalloc not supported"
 
   let ( + ) = add
 

@@ -41,20 +41,14 @@ module type BASE = sig
   (** [add a b] returns [a + b mod order] *)
   val add : t -> t -> t
 
-  val add_noalloc : t -> t -> t -> unit
-
   (** Infix operator for [add] *)
   val ( + ) : t -> t -> t
 
   (** [sub a b] returns [a - b mod order] *)
   val sub : t -> t -> t
 
-  val sub_noalloc : t -> t -> t -> unit
-
   (** [mul a b] returns [a * b mod order] *)
   val mul : t -> t -> t
-
-  val mul_noalloc : t -> t -> t -> unit
 
   (** Infix operator for [mul] *)
   val ( * ) : t -> t -> t
@@ -123,6 +117,14 @@ module type BASE = sig
       with the coefficient of the constant monomial.
   *)
   val to_bytes : t -> Bytes.t
+
+  val supports_noalloc : bool
+
+  val add_noalloc : t -> t -> t -> unit
+
+  val mul_noalloc : t -> t -> t -> unit
+
+  val sub_noalloc : t -> t -> t -> unit
 end
 
 (** Module type for prime field of the form GF(p) where p is prime *)
