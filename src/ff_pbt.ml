@@ -468,6 +468,62 @@ module MakeSquareRoot (PrimeField : Ff_sig.PRIME) = struct
           (repeat ~n:1000 test_square_root_on_random) ] )
 end
 
+module MakeInplaceOperations (Field : Ff_sig.PRIME) = struct
+  let test_add_inplace () =
+    let x = Field.random () in
+    let y = Field.random () in
+    let res = Field.add x y in
+    Field.add_inplace x y ;
+    assert (Field.eq x res)
+
+  let test_add_inplace_with_same_value () =
+    let x = Field.random () in
+    let res = Field.add x x in
+    Field.add_inplace x x ;
+    assert (Field.eq x res)
+
+  let test_sub_inplace () =
+    let x = Field.random () in
+    let y = Field.random () in
+    let res = Field.sub x y in
+    Field.sub_inplace x y ;
+    assert (Field.eq x res)
+
+  let test_sub_inplace_with_same_value () =
+    let x = Field.random () in
+    let res = Field.sub x x in
+    Field.sub_inplace x x ;
+    assert (Field.eq x res)
+
+  let test_mul_inplace () =
+    let x = Field.random () in
+    let y = Field.random () in
+    let res = Field.mul x y in
+    Field.mul_inplace x y ;
+    assert (Field.eq x res)
+
+  let test_mul_inplace_with_same_value () =
+    let x = Field.random () in
+    let res = Field.mul x x in
+    Field.mul_inplace x x ;
+    assert (Field.eq x res)
+
+  let get_tests () =
+    let txt =
+      Printf.sprintf
+        "Inplace operations for finite field of order %s"
+        (Z.to_string Field.order)
+    in
+    let open Alcotest in
+    ( String.sub txt 0 (min (String.length txt) 100),
+      [ test_case "add" `Quick (repeat ~n:100 test_add_inplace);
+        test_case "add with same value" `Quick (repeat ~n:100 test_add_inplace);
+        test_case "sub with same value" `Quick (repeat ~n:100 test_sub_inplace);
+        test_case "mul with same value" `Quick (repeat ~n:100 test_mul_inplace);
+        test_case "sub" `Quick (repeat ~n:100 test_sub_inplace);
+        test_case "mul" `Quick (repeat ~n:100 test_mul_inplace) ] )
+end
+
 module MakeAll (FiniteField : Ff_sig.BASE) = struct
   module ValueGeneration = MakeValueGeneration (FiniteField)
   module IsZero = MakeIsZero (FiniteField)
@@ -481,4 +537,23 @@ module MakeAll (FiniteField : Ff_sig.BASE) = struct
       Equality.get_tests ();
       FieldProperties.get_tests ();
       MemoryRepresentation.get_tests () ]
+end
+
+module MakeAllPrime (Field : Ff_sig.PRIME) = struct
+  module ValueGeneration = MakeValueGeneration (Field)
+  module IsZero = MakeIsZero (Field)
+  module Equality = MakeEquality (Field)
+  module FieldProperties = MakeFieldProperties (Field)
+  module MemoryRepresentation = MakeMemoryRepresentation (Field)
+  module InplaceOperators = MakeInplaceOperations (Field)
+  module QuadraticResidue = MakeQuadraticResidue (Field)
+
+  let get_tests () =
+    [ ValueGeneration.get_tests ();
+      IsZero.get_tests ();
+      Equality.get_tests ();
+      FieldProperties.get_tests ();
+      MemoryRepresentation.get_tests ();
+      InplaceOperators.get_tests ();
+      QuadraticResidue.get_tests () ]
 end

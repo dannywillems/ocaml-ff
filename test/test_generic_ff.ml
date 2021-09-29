@@ -2,35 +2,30 @@ module F2 = Ff.MakeFp (struct
   let prime_order = Z.of_string "2"
 end)
 
-module F2Tests = Ff_pbt.MakeAll (F2)
-module F2QuadraticResidueTests = Ff_pbt.MakeQuadraticResidue (F2)
+module F2Tests = Ff_pbt.MakeAllPrime (F2)
 
 module F3 = Ff.MakeFp (struct
   let prime_order = Z.of_string "3"
 end)
 
-module F3Tests = Ff_pbt.MakeAll (F3)
-module F3QuadraticResidueTests = Ff_pbt.MakeQuadraticResidue (F3)
 module F3SquareRoot = Ff_pbt.MakeSquareRoot (F3)
+module F3Tests = Ff_pbt.MakeAllPrime (F3)
 module F3RootOfUnity = Ff_pbt.MakeRootOfUnity (F3)
 
 module F13 = Ff.MakeFp (struct
   let prime_order = Z.of_string "13"
 end)
 
-module F13Tests = Ff_pbt.MakeAll (F13)
-module F13QuadraticResidueTests = Ff_pbt.MakeQuadraticResidue (F13)
 module F13SquareRootTests = Ff_pbt.MakeSquareRoot (F13)
+module F13Tests = Ff_pbt.MakeAllPrime (F13)
 module F13RootOfUnity = Ff_pbt.MakeRootOfUnity (F13)
 
 module F1073740201 = Ff.MakeFp (struct
   let prime_order = Z.of_string "1073740201"
 end)
 
-module F1073740201Tests = Ff_pbt.MakeAll (F1073740201)
-module F1073740201QuadraticResidueTests =
-  Ff_pbt.MakeQuadraticResidue (F1073740201)
 module F1073740201SquareRootTests = Ff_pbt.MakeSquareRoot (F1073740201)
+module F1073740201Tests = Ff_pbt.MakeAllPrime (F1073740201)
 module F1073740201RootOfUnity = Ff_pbt.MakeRootOfUnity (F1073740201)
 
 module FFLong = Ff.MakeFp (struct
@@ -39,9 +34,8 @@ module FFLong = Ff.MakeFp (struct
       "4002409555221667393417789825735904156556882819939007885332058136124031650490837864442687629129015664037894272559787"
 end)
 
-module FFLongTests = Ff_pbt.MakeAll (FFLong)
-module FFLongQuadraticResidueTests = Ff_pbt.MakeQuadraticResidue (FFLong)
 module FFLongSquareRootTests = Ff_pbt.MakeSquareRoot (FFLong)
+module FFLongTests = Ff_pbt.MakeAllPrime (FFLong)
 module FFLongRootOfUnity = Ff_pbt.MakeRootOfUnity (FFLong)
 
 (* module ScalarFieldBLS12_381Tests = Ff_pbt.MakeAll (ScalarFieldBLS12_381) *)
@@ -87,10 +81,8 @@ module FFBaseCurve25519 = Ff.MakeFp (struct
   let prime_order = Z.(pow (succ one) 255 - of_int 19)
 end)
 
-module FFBaseCurve25519Tests = Ff_pbt.MakeAll (FFBaseCurve25519)
-module FFBaseCurve25519QuadraticResidueTests =
-  Ff_pbt.MakeQuadraticResidue (FFBaseCurve25519)
 module FFBaseCurve25519SquareRootTests = Ff_pbt.MakeSquareRoot (FFBaseCurve25519)
+module FFBaseCurve25519Tests = Ff_pbt.MakeAllPrime (FFBaseCurve25519)
 
 module F13_2 =
   Ff.MakeFp2
@@ -233,15 +225,11 @@ let () =
       :: test_encoding_is_in_little_endian ()
       :: test_vectors_legendre_symbol ()
       :: test_vectors_power_of_two ()
-      :: F2QuadraticResidueTests.get_tests ()
-      :: F13QuadraticResidueTests.get_tests ()
       :: F3SquareRoot.get_tests () :: F3RootOfUnity.get_tests ()
       :: F13SquareRootTests.get_tests ()
       :: F13RootOfUnity.get_tests ()
-      :: F1073740201QuadraticResidueTests.get_tests ()
       :: F1073740201SquareRootTests.get_tests ()
       :: F1073740201RootOfUnity.get_tests ()
-      :: FFLongQuadraticResidueTests.get_tests ()
       :: FFLongRootOfUnity.get_tests ()
       :: FFLongSquareRootTests.get_tests ()
       :: FFBaseCurve25519SquareRootTests.get_tests ()
