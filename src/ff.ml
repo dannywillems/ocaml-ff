@@ -49,9 +49,15 @@ end) : PRIME_WITH_ROOT_OF_UNITY = struct
 
   let add a b = ref (Z.erem (Z.add !a !b) order)
 
+  let add_inplace a b = a := Z.erem (Z.add !a !b) order
+
   let sub a b = ref (Z.erem (Z.sub !a !b) order)
 
+  let sub_inplace a b = a := Z.erem (Z.sub !a !b) order
+
   let mul a b = ref (Z.erem (Z.mul !a !b) order)
+
+  let mul_inplace a b = a := Z.erem (Z.mul !a !b) order
 
   let eq a b = Z.equal (Z.erem !a order) (Z.erem !b order)
 

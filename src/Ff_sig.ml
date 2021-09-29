@@ -123,6 +123,15 @@ end
 module type PRIME = sig
   include BASE
 
+  (** Like [add] but the result is copied in the first parameter *)
+  val add_inplace : t -> t -> unit
+
+  (** Like [add] but the result is copied in the first parameter *)
+  val sub_inplace : t -> t -> unit
+
+  (** Like [add] but the result is copied in the first parameter *)
+  val mul_inplace : t -> t -> unit
+
   (** Returns [s, q] such that [order - 1 = 2^s * q] *)
   val factor_power_of_two : int * Z.t
 
