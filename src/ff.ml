@@ -3,7 +3,7 @@ module MakeFp (S : sig
 end) : PRIME_WITH_ROOT_OF_UNITY = struct
   exception Not_in_field of Bytes.t
 
-  type t = Z.t
+  type t = Z.t ref
 
   let order =
     assert (S.prime_order >= Z.of_string "2") ;
@@ -22,22 +22,22 @@ end) : PRIME_WITH_ROOT_OF_UNITY = struct
 
   let size_in_bytes = int_of_float (log256 (Z.to_float order)) + 1
 
-  let zero = Z.zero
+  let zero = ref Z.zero
 
-  let one = Z.one
+  let one = ref Z.one
 
   (** By default, any bytes sequence is valid because we care about the result
       modulo the order *)
   let check_bytes _bs = true
 
-  let is_zero s = Z.equal (Z.erem s order) Z.zero
+  let is_zero s = Z.equal (Z.erem !s order) Z.zero
 
-  let is_one s = Z.equal (Z.erem s order) Z.one
+  let is_one s = Z.equal (Z.erem !s order) Z.one
 
   let random ?state () =
     (match state with None -> () | Some s -> Random.set_state s) ;
     let r = Bytes.init size_in_bytes (fun _ -> char_of_int (Random.int 256)) in
-    Z.erem (Z.of_bits (Bytes.to_string r)) order
+    ref (Z.erem (Z.of_bits (Bytes.to_string r)) order)
 
   let non_null_random ?state () =
     (match state with None -> () | Some s -> Random.set_state s) ;
@@ -47,26 +47,26 @@ end) : PRIME_WITH_ROOT_OF_UNITY = struct
     in
     aux ()
 
-  let add a b = Z.erem (Z.add a b) order
+  let add a b = ref (Z.erem (Z.add !a !b) order)
 
-  let sub a b = Z.erem (Z.sub a b) order
+  let sub a b = ref (Z.erem (Z.sub !a !b) order)
 
-  let mul a b = Z.erem (Z.mul a b) order
+  let mul a b = ref (Z.erem (Z.mul !a !b) order)
 
-  let eq a b = Z.equal (Z.erem a order) (Z.erem b order)
+  let eq a b = Z.equal (Z.erem !a order) (Z.erem !b order)
 
-  let negate a = sub order a
+  let negate a = sub (ref order) a
 
   let inverse_exn a =
-    if a = zero then raise Division_by_zero else Z.invert a order
+    if eq a zero then raise Division_by_zero else ref ((Z.invert !a) order)
 
   let inverse_opt a =
-    try Some (Z.invert a order) with Division_by_zero -> None
+    try Some (ref (Z.invert !a order)) with Division_by_zero -> None
 
   let div_exn a b =
-    if b = zero then raise Division_by_zero else mul a (inverse_exn b)
+    if eq b zero then raise Division_by_zero else mul a (inverse_exn b)
 
-  let div_opt a b = if b = zero then None else Some (mul a (inverse_exn b))
+  let div_opt a b = if eq b zero then None else Some (mul a (inverse_exn b))
 
   let square x = mul x x
 
@@ -76,18 +76,18 @@ end) : PRIME_WITH_ROOT_OF_UNITY = struct
     if Z.equal n Z.zero then one
     else if is_zero x then zero
     else if Z.equal n Z.one then x
-    else Z.powm x n order
+    else ref (Z.powm !x n order)
 
   (* Decimal representation by default *)
-  let of_string s = Z.erem (Z.of_string s) order
+  let of_string s = ref @@ Z.erem (Z.of_string s) order
 
   (* Decimal representation by default *)
-  let to_string s = Z.to_string s
+  let to_string s = Z.to_string !s
 
   (** From a predefined bytes representation, construct a value t. It is not
       required that to_bytes (of_bytes_exn t)) = t. By default, little endian
       encoding is used and the given element is modulo the prime order *)
-  let of_bytes_exn s = Z.erem (Z.of_bits (Bytes.to_string s)) order
+  let of_bytes_exn s = ref @@ Z.erem (Z.of_bits (Bytes.to_string s)) order
 
   (** From a predefined bytes representation, construct a value t. It is not
       required that to_bytes (Option.get (of_bytes_opt t)) = t. By default,
@@ -96,7 +96,7 @@ end) : PRIME_WITH_ROOT_OF_UNITY = struct
 
   (* Little endian representation *)
   let to_bytes s =
-    let b = Bytes.of_string (Z.to_bits s) in
+    let b = Bytes.of_string (Z.to_bits !s) in
     let res = Bytes.make size_in_bytes '\000' in
     Bytes.blit b 0 res 0 (min (Bytes.length b) size_in_bytes) ;
     res
@@ -105,7 +105,7 @@ end) : PRIME_WITH_ROOT_OF_UNITY = struct
 
   let rec get_nth_root_of_unity n =
     let pred_order = Z.pred order in
-    if Z.gt n pred_order || not (Z.(erem pred_order n) = zero) then
+    if Z.gt n pred_order || not (Z.(erem pred_order n) = Z.zero) then
       failwith "n must divide the order of the multiplication subgroup"
     else
       let rec aux () =
@@ -114,9 +114,9 @@ end) : PRIME_WITH_ROOT_OF_UNITY = struct
       in
       aux ()
 
-  let to_z t = t
+  let to_z t = !t
 
-  let of_z t = Z.erem t order
+  let of_z t = ref @@ Z.erem t order
 
   let legendre_symbol x =
     if is_zero x then Z.zero
@@ -124,7 +124,7 @@ end) : PRIME_WITH_ROOT_OF_UNITY = struct
     else Z.neg Z.one
 
   let is_quadratic_residue x =
-    if is_zero x then true else is_one (legendre_symbol x)
+    if is_zero x then true else Z.equal (legendre_symbol x) Z.one
 
   let rec pick_non_square () =
     let z = random () in
