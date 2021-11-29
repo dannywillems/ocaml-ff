@@ -34,6 +34,7 @@ dune-release-distrib:
     - opam install . -y
   script:
     - dune-release distrib
+  allow_failure: true
 
 .build-test: &build_definition
   stage: build

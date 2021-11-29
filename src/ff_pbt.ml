@@ -468,6 +468,35 @@ module MakeSquareRoot (PrimeField : Ff_sig.PRIME) = struct
           (repeat ~n:1000 test_square_root_on_random) ] )
 end
 
+module MakeAdditionalConstructors (F : Ff_sig.PRIME) = struct
+  let test_positive_values_as_documented () =
+    let n = Random.int 1_000_000 in
+    let n_fr = F.of_int n in
+    assert (F.(eq (of_z (Z.of_int n)) n_fr))
+
+  let test_negative_values_as_documented () =
+    let n = -Random.int 1_000_000 in
+    let n_fr = F.of_int n in
+    assert (F.(eq (of_z (Z.of_int n)) n_fr))
+
+  let get_tests () =
+    let open Alcotest in
+    let txt =
+      Printf.sprintf
+        "Additional constructors on finite field of order %s"
+        (Z.to_string F.order)
+    in
+    ( String.sub txt 0 (min (String.length txt) 100),
+      [ test_case
+          "with positive values as documented"
+          `Quick
+          (repeat ~n:100 test_positive_values_as_documented);
+        test_case
+          "with negative values as documented"
+          `Quick
+          (repeat ~n:100 test_negative_values_as_documented) ] )
+end
+
 module MakeAll (FiniteField : Ff_sig.BASE) = struct
   module ValueGeneration = MakeValueGeneration (FiniteField)
   module IsZero = MakeIsZero (FiniteField)
@@ -480,5 +509,26 @@ module MakeAll (FiniteField : Ff_sig.BASE) = struct
       IsZero.get_tests ();
       Equality.get_tests ();
       FieldProperties.get_tests ();
+      MemoryRepresentation.get_tests () ]
+end
+
+module MakeAllPrime (FiniteField : Ff_sig.PRIME) = struct
+  module ValueGeneration = MakeValueGeneration (FiniteField)
+  module IsZero = MakeIsZero (FiniteField)
+  module Equality = MakeEquality (FiniteField)
+  module FieldProperties = MakeFieldProperties (FiniteField)
+  module MemoryRepresentation = MakeMemoryRepresentation (FiniteField)
+  module AdditionalConstructors = MakeAdditionalConstructors (FiniteField)
+  module QuadraticResidueTests = MakeQuadraticResidue (FiniteField)
+  module SquareRoot = MakeSquareRoot (FiniteField)
+
+  let get_tests () =
+    [ ValueGeneration.get_tests ();
+      IsZero.get_tests ();
+      Equality.get_tests ();
+      FieldProperties.get_tests ();
+      QuadraticResidueTests.get_tests ();
+      SquareRoot.get_tests ();
+      AdditionalConstructors.get_tests ();
       MemoryRepresentation.get_tests () ]
 end
