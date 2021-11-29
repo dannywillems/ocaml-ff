@@ -157,6 +157,9 @@ module type PRIME = sig
 
   (** [sqrt_opt x] returns a square root of [x] *)
   val sqrt_opt : t -> t option
+
+  (** [of_int x] is equivalent to [of_z (Z.of_int x)] *)
+  val of_int : int -> t
 end
 
 (** Module type for prime field with additional functions to manipulate roots of unity *)

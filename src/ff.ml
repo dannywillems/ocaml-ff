@@ -165,6 +165,8 @@ end) : PRIME_WITH_ROOT_OF_UNITY = struct
         in
         Some (aux s c (pow x q) (pow x (Z.divexact (Z.succ q) two_z)))
 
+  let of_int x = of_z (Z.of_int x)
+
   let ( + ) = add
 
   let ( * ) = mul
