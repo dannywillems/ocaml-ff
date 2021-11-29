@@ -47,9 +47,9 @@ end) : PRIME_WITH_ROOT_OF_UNITY = struct
     in
     aux ()
 
-  let add a b = ref (Z.erem (Z.add !a !b) order)
 
-  let add_inplace a b = a := Z.erem (Z.add !a !b) order
+  let add_inplace a b =
+    a := Z.erem (Z.add !a !b) order
 
   let sub a b = ref (Z.erem (Z.sub !a !b) order)
 

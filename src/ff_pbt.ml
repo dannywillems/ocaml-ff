@@ -516,10 +516,10 @@ module MakeInplaceOperations (Field : Ff_sig.PRIME) = struct
     in
     let open Alcotest in
     ( String.sub txt 0 (min (String.length txt) 100),
-      [ test_case "add" `Quick (repeat ~n:100 test_add_inplace);
-        test_case "add with same value" `Quick (repeat ~n:100 test_add_inplace);
-        test_case "sub with same value" `Quick (repeat ~n:100 test_sub_inplace);
-        test_case "mul with same value" `Quick (repeat ~n:100 test_mul_inplace);
+      [ test_case "add" `Quick (repeat ~n:1000000 test_add_inplace);
+        test_case "add with same value" `Quick (repeat ~n:1000000 test_add_inplace_with_same_value);
+        test_case "sub with same value" `Quick (repeat ~n:1000000 test_sub_inplace_with_same_value);
+        test_case "mul with same value" `Quick (repeat ~n:1000000 test_mul_inplace_with_same_value);
         test_case "sub" `Quick (repeat ~n:100 test_sub_inplace);
         test_case "mul" `Quick (repeat ~n:100 test_mul_inplace) ] )
 end
