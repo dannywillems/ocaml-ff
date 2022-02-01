@@ -13,7 +13,7 @@ end) : PRIME_WITH_ROOT_OF_UNITY = struct
 
   let factor_power_of_two =
     let rec aux i n =
-      let (q, r) = Z.ediv_rem n two_z in
+      let q, r = Z.ediv_rem n two_z in
       if Z.equal r Z.zero then aux (i + 1) q else (i, n)
     in
     aux 0 (Z.pred order)
@@ -135,7 +135,7 @@ end) : PRIME_WITH_ROOT_OF_UNITY = struct
     if not (is_quadratic_residue x) then None
     else
       (* https://en.wikipedia.org/wiki/Tonelli%E2%80%93Shanks_algorithm *)
-      let (s, q) = factor_power_of_two in
+      let s, q = factor_power_of_two in
       (* implies p = 3 mod 4 *)
       if s = 1 then
         (* r = x^((p + 1) / 4) *)
@@ -280,7 +280,7 @@ end = struct
     else if Z.equal n Z.one then x
     else
       let n = Z.erem n (Z.pred order) in
-      let (a, r) = Z.ediv_rem n two_z in
+      let a, r = Z.ediv_rem n two_z in
       let acc = pow x a in
       let acc_square = mul acc acc in
       if Z.equal r Z.zero then acc_square else mul acc_square x
@@ -309,8 +309,8 @@ end = struct
       let x = Fp.of_bytes_opt x_bytes in
       let y = Fp.of_bytes_opt y_bytes in
       match (x, y) with
-      | (None, _) | (_, None) -> None
-      | (Some x, Some y) -> Some (x, y)
+      | None, _ | _, None -> None
+      | Some x, Some y -> Some (x, y)
     else None
 
   (* Little endian representation *)

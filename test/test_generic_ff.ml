@@ -62,7 +62,7 @@ module ScalarFieldBLS12_381UnitTest_RootOfUnity = struct
         assert (
           ScalarFieldBLS12_381.is_nth_root_of_unity
             (Z.of_int n)
-            (ScalarFieldBLS12_381.of_string x) ))
+            (ScalarFieldBLS12_381.of_string x)))
       vectors
 
   let get_tests () =
@@ -188,7 +188,7 @@ let test_vectors_legendre_symbol () =
               assert (
                 Z.equal
                   (Fp.legendre_symbol (Fp.of_string v))
-                  (Z.of_string expected_result) ))
+                  (Z.of_string expected_result)))
             test_vectors) ] )
 
 let test_vectors_power_of_two () =
@@ -217,17 +217,17 @@ let () =
   let open Alcotest in
   run
     "Random fields"
-    ( test_size_in_bytes ()
-      :: test_encoding_is_in_little_endian ()
-      :: test_vectors_legendre_symbol ()
-      :: test_vectors_power_of_two ()
-      :: F2QuadraticResidueTests.get_tests ()
-      :: F3RootOfUnity.get_tests ()
-      :: F13RootOfUnity.get_tests ()
-      :: F1073740201RootOfUnity.get_tests ()
-      :: FFLongRootOfUnity.get_tests ()
-      :: ScalarFieldBLS12_381UnitTest_RootOfUnity.get_tests ()
-      :: F2Tests.get_tests ()
+    (test_size_in_bytes ()
+     :: test_encoding_is_in_little_endian ()
+     :: test_vectors_legendre_symbol ()
+     :: test_vectors_power_of_two ()
+     :: F2QuadraticResidueTests.get_tests ()
+     :: F3RootOfUnity.get_tests ()
+     :: F13RootOfUnity.get_tests ()
+     :: F1073740201RootOfUnity.get_tests ()
+     :: FFLongRootOfUnity.get_tests ()
+     :: ScalarFieldBLS12_381UnitTest_RootOfUnity.get_tests ()
+     :: F2Tests.get_tests ()
     @ F3Tests.get_tests () @ F13Tests.get_tests () @ FFLongTests.get_tests ()
     @ FFBaseCurve25519Tests.get_tests ()
-    @ F13_2Tests.get_tests () )
+    @ F13_2Tests.get_tests ())

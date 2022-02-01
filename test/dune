@@ -2,12 +2,10 @@
  (names test_generic_ff)
  (modules test_generic_ff)
  (libraries ff ff-pbt alcotest)
- (package ff)
-)
+ (package ff))
 
 (tests
  (names test_ff_bench)
  (modules test_ff_bench)
  (libraries ff ff-bench core_bench core)
- (package ff-bench)
-)
+ (package ff-bench))

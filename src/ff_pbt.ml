@@ -6,7 +6,7 @@ let rec repeat ?(n = 100) f =
     f
   else (
     f () ;
-    repeat ~n:(n - 1) f )
+    repeat ~n:(n - 1) f)
 
 (** Check the routine generators do not raise any exception *)
 module MakeValueGeneration (FiniteField : Ff_sig.BASE) = struct
@@ -134,12 +134,12 @@ module MakeFieldProperties (FiniteField : Ff_sig.BASE) = struct
   let zero_nullifier_zero () =
     (* Special case 0 * 0 = 0 *)
     assert (
-      FiniteField.is_zero (FiniteField.mul FiniteField.zero FiniteField.zero) )
+      FiniteField.is_zero (FiniteField.mul FiniteField.zero FiniteField.zero))
 
   let zero_nullifier_one () =
     (* Special case 0 * 1 = 0 *)
     assert (
-      FiniteField.is_zero (FiniteField.mul FiniteField.zero FiniteField.one) )
+      FiniteField.is_zero (FiniteField.mul FiniteField.zero FiniteField.one))
 
   let rec inverse_property () =
     let random = FiniteField.random () in
@@ -148,12 +148,11 @@ module MakeFieldProperties (FiniteField : Ff_sig.BASE) = struct
       assert (
         FiniteField.eq
           (FiniteField.mul (FiniteField.inverse_exn random) random)
-          FiniteField.one )
+          FiniteField.one)
 
   let inverse_of_one_is_one () =
     assert (
-      FiniteField.eq (FiniteField.inverse_exn FiniteField.one) FiniteField.one
-    )
+      FiniteField.eq (FiniteField.inverse_exn FiniteField.one) FiniteField.one)
 
   let zero_has_no_inverse () =
     match FiniteField.inverse_opt FiniteField.zero with
@@ -175,23 +174,23 @@ module MakeFieldProperties (FiniteField : Ff_sig.BASE) = struct
       assert (
         FiniteField.eq
           (FiniteField.inverse_exn (FiniteField.inverse_exn random))
-          random )
+          random)
 
   let opposite_property () =
     let random = FiniteField.random () in
     assert (
       FiniteField.eq
         (FiniteField.add (FiniteField.negate random) random)
-        FiniteField.zero )
+        FiniteField.zero)
 
   let opposite_of_opposite () =
     let random = FiniteField.random () in
     assert (
-      FiniteField.eq (FiniteField.negate (FiniteField.negate random)) random )
+      FiniteField.eq (FiniteField.negate (FiniteField.negate random)) random)
 
   let opposite_of_zero_is_zero () =
     assert (
-      FiniteField.eq (FiniteField.negate FiniteField.zero) FiniteField.zero )
+      FiniteField.eq (FiniteField.negate FiniteField.zero) FiniteField.zero)
 
   let additive_associativity () =
     let g1 = FiniteField.random () in
@@ -200,7 +199,7 @@ module MakeFieldProperties (FiniteField : Ff_sig.BASE) = struct
     assert (
       FiniteField.eq
         (FiniteField.add (FiniteField.add g1 g2) g3)
-        (FiniteField.add (FiniteField.add g2 g3) g1) )
+        (FiniteField.add (FiniteField.add g2 g3) g1))
 
   let distributivity () =
     let g1 = FiniteField.random () in
@@ -209,7 +208,7 @@ module MakeFieldProperties (FiniteField : Ff_sig.BASE) = struct
     assert (
       FiniteField.eq
         (FiniteField.mul (FiniteField.add g1 g2) g3)
-        (FiniteField.add (FiniteField.mul g1 g3) (FiniteField.mul g2 g3)) )
+        (FiniteField.add (FiniteField.mul g1 g3) (FiniteField.mul g2 g3)))
 
   let multiplicative_associativity () =
     let g1 = FiniteField.random () in
@@ -218,13 +217,12 @@ module MakeFieldProperties (FiniteField : Ff_sig.BASE) = struct
     assert (
       FiniteField.eq
         (FiniteField.mul (FiniteField.mul g1 g2) g3)
-        (FiniteField.mul (FiniteField.mul g2 g3) g1) )
+        (FiniteField.mul (FiniteField.mul g2 g3) g1))
 
   (** 0**0 = 1 *)
   let pow_zero_to_zero_is_one () =
     assert (
-      FiniteField.eq (FiniteField.pow FiniteField.zero Z.zero) FiniteField.one
-    )
+      FiniteField.eq (FiniteField.pow FiniteField.zero Z.zero) FiniteField.one)
 
   (** 0 ** n = 0, n != 0 *)
   let pow_zero_to_non_null_exponent_is_zero () =
@@ -237,7 +235,7 @@ module MakeFieldProperties (FiniteField : Ff_sig.BASE) = struct
 
   let pow_zero_on_one_equals_one () =
     assert (
-      FiniteField.eq (FiniteField.pow FiniteField.one Z.zero) FiniteField.one )
+      FiniteField.eq (FiniteField.pow FiniteField.one Z.zero) FiniteField.one)
 
   let pow_one_on_random_element_equals_the_random_element () =
     let e = FiniteField.random () in
@@ -246,8 +244,7 @@ module MakeFieldProperties (FiniteField : Ff_sig.BASE) = struct
   let pow_two_on_random_element_equals_the_square () =
     let e = FiniteField.random () in
     assert (
-      FiniteField.eq (FiniteField.pow e (Z.succ Z.one)) (FiniteField.square e)
-    )
+      FiniteField.eq (FiniteField.pow e (Z.succ Z.one)) (FiniteField.square e))
 
   (** x**(-n) = x**(g - 1 - n) where g is the order of the additive group *)
   let pow_to_negative_exponent () =
@@ -256,7 +253,7 @@ module MakeFieldProperties (FiniteField : Ff_sig.BASE) = struct
     assert (
       FiniteField.eq
         (FiniteField.pow x (Z.neg n))
-        (FiniteField.pow x (Z.sub (Z.pred FiniteField.order) n)) )
+        (FiniteField.pow x (Z.sub (Z.pred FiniteField.order) n)))
 
   let pow_addition_property () =
     let g = FiniteField.random () in
@@ -265,7 +262,7 @@ module MakeFieldProperties (FiniteField : Ff_sig.BASE) = struct
     assert (
       FiniteField.eq
         (FiniteField.pow g (Z.add x y))
-        (FiniteField.mul (FiniteField.pow g x) (FiniteField.pow g y)) )
+        (FiniteField.mul (FiniteField.pow g x) (FiniteField.pow g y)))
 
   (** x**g = x where g = |(F, +, 0)| *)
   let pow_to_the_additive_group_order_equals_same_element () =
@@ -281,7 +278,7 @@ module MakeFieldProperties (FiniteField : Ff_sig.BASE) = struct
       assert (
         FiniteField.eq
           (FiniteField.pow x (Z.pred FiniteField.order))
-          FiniteField.one )
+          FiniteField.one)
 
   (** x**(n + g) = x**n where g = |(F, *, 1)| *)
   let pow_add_multiplicative_group_order_to_a_random_power () =
@@ -289,8 +286,7 @@ module MakeFieldProperties (FiniteField : Ff_sig.BASE) = struct
     let n = Z.of_int (Random.int 1_000_000_000) in
     let order = Z.pred FiniteField.order in
     assert (
-      FiniteField.eq (FiniteField.pow x (Z.add n order)) (FiniteField.pow x n)
-    )
+      FiniteField.eq (FiniteField.pow x (Z.add n order)) (FiniteField.pow x n))
 
   let sub_definition () =
     let x = FiniteField.random () in
