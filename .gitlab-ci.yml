@@ -7,13 +7,11 @@ stages:
 
 lint:
   stage: lint
-  image: registry.gitlab.com/dannywillems/docker-ocamlformat:0.15.0
+  image: ocaml/opam:debian-ocaml-4.12
   before_script:
-    - eval $(opam env)
+    - opam install ocamlformat.0.20.0 -y
   script:
-    - ocamlformat --check js/*.ml*
-    - ocamlformat --check src/*.ml*
-    - ocamlformat --check test/*.ml*
+    - dune build @fmt
   rules:
     - when: always
 
