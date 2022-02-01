@@ -41,7 +41,7 @@ module type BASE = sig
   (** [add a b] returns [a + b mod order] *)
   val add : t -> t -> t
 
-  (** Infix operator for [add] *)
+  (** Infix operator for {!add} *)
   val ( + ) : t -> t -> t
 
   (** [sub a b] returns [a - b mod order] *)
@@ -56,7 +56,7 @@ module type BASE = sig
   (** [eq a b] returns [true] if [a = b mod order], else [false] *)
   val eq : t -> t -> bool
 
-  (** Infix operator for [eq] *)
+  (** Infix operator for {!eq} *)
   val ( = ) : t -> t -> bool
 
   (** [negate x] returns [-x mod order]. Equivalently, [negate x] returns the
@@ -64,7 +64,7 @@ module type BASE = sig
   *)
   val negate : t -> t
 
-  (** Infix operator for [negate] *)
+  (** Infix operator for {!negate} *)
   val ( - ) : t -> t
 
   (** [inverse_exn x] returns [x^-1] if [x] is not [0], else raise
@@ -81,7 +81,7 @@ module type BASE = sig
   (** [div_opt a b] returns [a * b^-1] as an option. Return [None] if [b = zero] *)
   val div_opt : t -> t -> t option
 
-  (** Infix operator for [div_exn] *)
+  (** Infix operator for {!div_exn} *)
   val ( / ) : t -> t -> t
 
   (** [square x] returns [x^2] *)
@@ -93,18 +93,18 @@ module type BASE = sig
   (** [pow x n] returns [x^n] *)
   val pow : t -> Z.t -> t
 
-  (** Infix operator for [pow] *)
+  (** Infix operator for {!pow} *)
   val ( ** ) : t -> Z.t -> t
 
-  (** Construct a value of type [t] from the bytes representation in little
+  (** Construct a value of type {!t} from the bytes representation in little
       endian of the field element. For non prime fields, the encoding starts
       with the coefficient of the constant monomial.
-      Raise [Not_in_field] if the bytes do not represent an element in the field.
+      Raise {!Not_in_field} if the bytes do not represent an element in the field.
   *)
   val of_bytes_exn : Bytes.t -> t
 
-  (** From a predefined little endian bytes representation, construct a value of type [t].
-      The same representation than [of_bytes_exn] is used.
+  (** From a predefined little endian bytes representation, construct a value of type {!t}.
+      The same representation than {!of_bytes_exn} is used.
       Return [None] if the bytes do not represent an element in the field.
   *)
   val of_bytes_opt : Bytes.t -> t option
