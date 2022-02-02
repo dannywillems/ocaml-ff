@@ -67,30 +67,39 @@ module type BASE = sig
   (** Infix operator for {!negate} *)
   val ( - ) : t -> t
 
-  (** [inverse_exn x] returns [x^-1] if [x] is not [0], else raise
-      [Division_by_zero]
+  (** [inverse_exn x] returns [x^-1 mod order] if [x] is not [0], else raise
+      [Division_by_zero]. Equivalently, [inverse_exn x] returns the
+      unique [y] such that [x * y mod order = 1]
   *)
   val inverse_exn : t -> t
 
-  (** [inverse_opt x] returns [x^-1] if [x] is not [0] as an option, else [None] *)
+  (** [inverse_opt x] returns [x^-1 mod order] as an option if [x] is not [0],
+      else returns [None]. Equivalently, [inverse_opt x] returns the
+      unique [y] such that [x * y mod order = 1]
+  *)
   val inverse_opt : t -> t option
 
-  (** [div_exn a b] returns [a * b^-1]. Raise [Division_by_zero] if [b = zero] *)
+  (** [div_exn a b] returns [a * b^-1]. Raise [Division_by_zero] if [b = zero].
+      Equivalently, [div_exn] returns the unique [y] such that [b * y mod order
+      = a] *)
   val div_exn : t -> t -> t
 
-  (** [div_opt a b] returns [a * b^-1] as an option. Return [None] if [b = zero] *)
+  (** [div_opt a b] returns [a * b^-1] as an option. Return [None] if [b = zero].
+      Equivalently, [div_opt] returns the unique [y] such that [b * y mod order
+      = a]
+  *)
   val div_opt : t -> t -> t option
 
   (** Infix operator for {!div_exn} *)
   val ( / ) : t -> t -> t
 
-  (** [square x] returns [x^2] *)
+  (** [square x] returns [x^2 mod order] *)
   val square : t -> t
 
-  (** [double x] returns [2x] *)
+  (** [double x] returns [2x mod order] *)
   val double : t -> t
 
-  (** [pow x n] returns [x^n] *)
+  (** [pow x n] returns [x^n mod order] *)
   val pow : t -> Z.t -> t
 
   (** Infix operator for {!pow} *)
@@ -126,23 +135,27 @@ module type PRIME = sig
   (** Returns [s, q] such that [order - 1 = 2^s * q] *)
   val factor_power_of_two : int * Z.t
 
-  (** Create a value t from a predefined string representation. It is not
-      required that to_string of_string t = t. By default, decimal
-      representation of the number is used, modulo the order of the field *)
+  (** Create a value of type [t] from a predefined string representation. It is not
+      required that [to_string (of_string t) = t]. By default, decimal
+      representation of the number is used, modulo the order of the field
+  *)
   val of_string : string -> t
 
-  (** String representation of a value t. It is not required that to_string
-      of_string t = t. By default, decimal representation of the number is
-      used *)
+  (** String representation of a value of type [t]. It is not required that
+      [to_string (of_string t) = t]. By default, decimal representation of the
+      number is used.
+  *)
   val to_string : t -> string
 
-  (** [of_z x] builds an element t from the Zarith element [x]. [mod order] is
-      applied if [x >= order] *)
+  (** [of_z x] builds an element of type [t] from the Zarith element [x]. [mod
+      order] is applied if [x >= order]
+  *)
   val of_z : Z.t -> t
 
   (** [to_z x] builds a Zarith element, using the decimal representation.
       Arithmetic on the result can be done using the modular functions on
-      integers *)
+      integers
+  *)
   val to_z : t -> Z.t
 
   (** Returns the Legendre symbol of the parameter. Note it does not work for
@@ -151,7 +164,7 @@ module type PRIME = sig
   val legendre_symbol : t -> Z.t
 
   (** [is_quadratic_residue x] returns [true] if [x] is a quadratic residue i.e.
-      if there exists [n] such that [n^2 mod p = 1]
+      if there exists [n] such that [n^2 mod order = x]
   *)
   val is_quadratic_residue : t -> bool
 
@@ -169,6 +182,6 @@ module type PRIME_WITH_ROOT_OF_UNITY = sig
   (** Returns a nth root of unity *)
   val get_nth_root_of_unity : Z.t -> t
 
-  (** [is_nth_root_of_unity n x] returns [true] if [x] is a nth-root of unity*)
+  (** [is_nth_root_of_unity n x] returns [true] if [x] is a nth-root of unity *)
   val is_nth_root_of_unity : Z.t -> t -> bool
 end
