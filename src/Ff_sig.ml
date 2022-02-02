@@ -7,7 +7,7 @@ module type BASE = sig
   (** The order of the finite field *)
   val order : Z.t
 
-  (** minimal number of bytes required to encode a value of the field. *)
+  (** Minimal number of bytes required to encode a value of the field *)
   val size_in_bytes : int
 
   (** [check_bytes bs] returns [true] if [bs] is a correct byte
@@ -26,16 +26,24 @@ module type BASE = sig
   (** [is_one x] returns [true] if [x] is the neutral element for the multiplication *)
   val is_one : t -> bool
 
-  (** Use carefully!
+  (** {b Use carefully!}
+
       [random ()] returns a random element of the field. A state for the PRNG
       can be given to initialize the PRNG in the requested state. If no state is
-      given, no initialisation is performed *)
+      given, no initialisation is performed.
+
+      To create a value of type [Random.State.t], you can use [Random.State.make
+      [|42|]]. *)
   val random : ?state:Random.State.t -> unit -> t
 
-  (** Use carefully!
-      [non_null_random ()] returns a non null random element of the field.
-      A state for the PRNG can be given to initialize the PRNG in the requested
-      state. If no state is given, no initialisation is performed *)
+  (** {b Use carefully!}
+
+      [non_null_random ()] returns a non null random element of the field. A
+      state for the PRNG can be given to initialize the PRNG in the requested
+      state. If no state is given, no initialisation is performed.
+
+      To create a value of type [Random.State.t], you can use [Random.State.make
+      [|42|]]. *)
   val non_null_random : ?state:Random.State.t -> unit -> t
 
   (** [add a b] returns [a + b mod order] *)
@@ -50,7 +58,7 @@ module type BASE = sig
   (** [mul a b] returns [a * b mod order] *)
   val mul : t -> t -> t
 
-  (** Infix operator for [mul] *)
+  (** Infix operator for {!mul} *)
   val ( * ) : t -> t -> t
 
   (** [eq a b] returns [true] if [a = b mod order], else [false] *)
@@ -105,34 +113,35 @@ module type BASE = sig
   (** Infix operator for {!pow} *)
   val ( ** ) : t -> Z.t -> t
 
-  (** Construct a value of type {!t} from the bytes representation in little
+  (** Construct a value of type [t] from the bytes representation in little
       endian of the field element. For non prime fields, the encoding starts
-      with the coefficient of the constant monomial.
-      Raise {!Not_in_field} if the bytes do not represent an element in the field.
-  *)
+      with the coefficient of the constant monomial. Raise {!Not_in_field} if
+      the bytes do not represent an element in the field. *)
   val of_bytes_exn : Bytes.t -> t
 
-  (** From a predefined little endian bytes representation, construct a value of type {!t}.
-      The same representation than {!of_bytes_exn} is used.
-      Return [None] if the bytes do not represent an element in the field.
-  *)
+  (** From a predefined little endian bytes representation, construct a value of
+      type [t]. The same representation than {!of_bytes_exn} is used. Return
+      [None] if the bytes do not represent an element in the field. *)
   val of_bytes_opt : Bytes.t -> t option
 
-  (** Convert the value t to a bytes representation.
-      The number of bytes is [size_in_bytes] and the
-      encoding must be in little endian. For instance, the encoding of [1] in prime fields is
-      always a bytes sequence of size [size_in_bytes] starting with the byte
-      [0b00000001]. For non prime fields, the encoding starts
-      with the coefficient of the constant monomial.
-  *)
+  (** Convert the value [t] to a bytes representation. The number of bytes is
+      {!size_in_bytes} and the encoding must be in little endian. For instance,
+      the encoding of [1] in prime fields is always a bytes sequence of size
+      {!size_in_bytes} starting with the byte [0b00000001].
+
+      For non prime fields, the encoding starts with the coefficient of the
+      constant monomial. For instance, an element [a + b * X] in [GF(p^2)] will
+      be encoded as [to_bytes a || to_bytes b] where [||] is the concatenation
+      of bytes *)
   val to_bytes : t -> Bytes.t
 end
 
-(** Module type for prime field of the form GF(p) where p is prime *)
+(** Module type for prime field of the form [GF(p)] where [p] is prime. The
+    order of GF(p) is [p] *)
 module type PRIME = sig
   include BASE
 
-  (** Returns [s, q] such that [order - 1 = 2^s * q] *)
+  (** Returns [s, q] such that [p - 1 = 2^s * q] *)
   val factor_power_of_two : int * Z.t
 
   (** Create a value of type [t] from a predefined string representation. It is not
@@ -148,8 +157,7 @@ module type PRIME = sig
   val to_string : t -> string
 
   (** [of_z x] builds an element of type [t] from the Zarith element [x]. [mod
-      order] is applied if [x >= order]
-  *)
+      p] is applied if [x >= p] *)
   val of_z : Z.t -> t
 
   (** [to_z x] builds a Zarith element, using the decimal representation.
@@ -170,7 +178,7 @@ module type PRIME = sig
 
   (** [sqrt_opt x] returns a square root of [x] as an option if it does exist.
       If it does not exist, returns [None]. Equivalenty it returns a value [y]
-      such that [y^2 mod order = x]. *)
+      such that [y^2 mod p = x]. *)
   val sqrt_opt : t -> t option
 
   (** [of_int x] is equivalent to [of_z (Z.of_int x)] *)
@@ -182,10 +190,10 @@ module type PRIME_WITH_ROOT_OF_UNITY = sig
   include PRIME
 
   (** [get_nth_root_of_unity n] returns a [n]-th root of unity. Equivalently, it
-      returns a value [x] such that [x^n mod order = 1] *)
+      returns a value [x] such that [x^n mod p = 1] *)
   val get_nth_root_of_unity : Z.t -> t
 
   (** [is_nth_root_of_unity n x] returns [true] if [x] is a [n]-th root of
-      unity. Equivalenty it returns [true] if [x^n mod order = 1] *)
+      unity. Equivalenty it returns [true] if [x^n mod p = 1] *)
   val is_nth_root_of_unity : Z.t -> t -> bool
 end
