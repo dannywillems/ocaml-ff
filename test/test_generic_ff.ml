@@ -73,7 +73,8 @@ module ScalarFieldBLS12_381UnitTest_RootOfUnity = struct
     (txt, [test_case "Test vectors" `Quick test_vectors])
 end
 
-(* This is the base field of the Curve 25519, the name comes from its order: p**255 - 19*)
+(* This is the base field of the Curve 25519, the name comes from its order:
+   p**255 - 19*)
 module FFBaseCurve25519 = Ff.MakeFp (struct
   let prime_order = Z.(pow (succ one) 255 - of_int 19)
 end)
@@ -207,7 +208,7 @@ let test_vectors_power_of_two () =
               let module Fp = Ff.MakeFp (struct
                 let prime_order = Z.of_string prime_order
               end) in
-              let (s, q) = Fp.factor_power_of_two in
+              let s, q = Fp.factor_power_of_two in
               assert (s = expected_s && Z.equal q (Z.of_string expected_q)) ;
               let res = Z.(mul (pow (Z.succ Z.one) s) q) in
               assert (Z.(equal res (Z.pred (Z.of_string prime_order)))))
