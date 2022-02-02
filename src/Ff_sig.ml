@@ -181,9 +181,11 @@ end
 module type PRIME_WITH_ROOT_OF_UNITY = sig
   include PRIME
 
-  (** Returns a nth root of unity *)
+  (** [get_nth_root_of_unity n] returns a [n]-th root of unity. Equivalently, it
+      returns a value [x] such that [x^n mod order = 1] *)
   val get_nth_root_of_unity : Z.t -> t
 
-  (** [is_nth_root_of_unity n x] returns [true] if [x] is a nth-root of unity *)
+  (** [is_nth_root_of_unity n x] returns [true] if [x] is a [n]-th root of
+      unity. Equivalenty it returns [true] if [x^n mod order = 1] *)
   val is_nth_root_of_unity : Z.t -> t -> bool
 end
