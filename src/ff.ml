@@ -91,7 +91,8 @@ end) : PRIME_WITH_ROOT_OF_UNITY = struct
 
   (** From a predefined bytes representation, construct a value t. It is not
       required that to_bytes (Option.get (of_bytes_opt t)) = t. By default,
-      little endian encoding is used and the given element is modulo the prime order *)
+      little endian encoding is used and the given element is modulo the prime
+      order *)
   let of_bytes_opt s = Some (of_bytes_exn s)
 
   (* Little endian representation *)
@@ -299,7 +300,8 @@ end = struct
 
   (** From a predefined bytes representation, construct a value t. It is not
       required that to_bytes (Option.get (of_bytes_opt t)) = t. By default,
-      little endian encoding is used and the given element is modulo the prime order *)
+      little endian encoding is used and the given element is modulo the prime
+      order *)
   let of_bytes_opt b =
     if Int.equal (Bytes.length b) size_in_bytes then
       let x_bytes = Bytes.sub b 0 (Int.div size_in_bytes 2) in

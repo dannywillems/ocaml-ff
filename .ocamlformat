@@ -1,4 +1,6 @@
 wrap-fun-args=false
+# Align on new lines
+wrap-comments=true
 let-binding-spacing=compact
 field-space=loose
 sequence-style=separator

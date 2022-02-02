@@ -10,8 +10,8 @@ module type BASE = sig
   (** Minimal number of bytes required to encode a value of the field *)
   val size_in_bytes : int
 
-  (** [check_bytes bs] returns [true] if [bs] is a correct byte
-      representation of a field element *)
+  (** [check_bytes bs] returns [true] if [bs] is a correct byte representation
+      of a field element *)
   val check_bytes : Bytes.t -> bool
 
   (** The neutral element for the addition *)
@@ -23,7 +23,8 @@ module type BASE = sig
   (** [is_zero x] returns [true] if [x] is the neutral element for the addition *)
   val is_zero : t -> bool
 
-  (** [is_one x] returns [true] if [x] is the neutral element for the multiplication *)
+  (** [is_one x] returns [true] if [x] is the neutral element for the
+      multiplication *)
   val is_one : t -> bool
 
   (** {b Use carefully!}
@@ -68,23 +69,20 @@ module type BASE = sig
   val ( = ) : t -> t -> bool
 
   (** [negate x] returns [-x mod order]. Equivalently, [negate x] returns the
-      unique [y] such that [x + y mod order = 0]
-  *)
+      unique [y] such that [x + y mod order = 0] *)
   val negate : t -> t
 
   (** Infix operator for {!negate} *)
   val ( - ) : t -> t
 
   (** [inverse_exn x] returns [x^-1 mod order] if [x] is not [0], else raise
-      [Division_by_zero]. Equivalently, [inverse_exn x] returns the
-      unique [y] such that [x * y mod order = 1]
-  *)
+      [Division_by_zero]. Equivalently, [inverse_exn x] returns the unique [y]
+      such that [x * y mod order = 1] *)
   val inverse_exn : t -> t
 
   (** [inverse_opt x] returns [x^-1 mod order] as an option if [x] is not [0],
-      else returns [None]. Equivalently, [inverse_opt x] returns the
-      unique [y] such that [x * y mod order = 1]
-  *)
+      else returns [None]. Equivalently, [inverse_opt x] returns the unique [y]
+      such that [x * y mod order = 1] *)
   val inverse_opt : t -> t option
 
   (** [div_exn a b] returns [a * b^-1]. Raise [Division_by_zero] if [b = zero].
@@ -92,10 +90,9 @@ module type BASE = sig
       = a] *)
   val div_exn : t -> t -> t
 
-  (** [div_opt a b] returns [a * b^-1] as an option. Return [None] if [b = zero].
-      Equivalently, [div_opt] returns the unique [y] such that [b * y mod order
-      = a]
-  *)
+  (** [div_opt a b] returns [a * b^-1] as an option. Return [None] if [b =
+      zero]. Equivalently, [div_opt] returns the unique [y] such that [b * y mod
+      order = a] *)
   val div_opt : t -> t -> t option
 
   (** Infix operator for {!div_exn} *)
@@ -144,16 +141,14 @@ module type PRIME = sig
   (** Returns [s, q] such that [p - 1 = 2^s * q] *)
   val factor_power_of_two : int * Z.t
 
-  (** Create a value of type [t] from a predefined string representation. It is not
-      required that [to_string (of_string t) = t]. By default, decimal
-      representation of the number is used, modulo the order of the field
-  *)
+  (** Create a value of type [t] from a predefined string representation. It is
+      not required that [to_string (of_string t) = t]. By default, decimal
+      representation of the number is used, modulo the order of the field *)
   val of_string : string -> t
 
   (** String representation of a value of type [t]. It is not required that
       [to_string (of_string t) = t]. By default, decimal representation of the
-      number is used.
-  *)
+      number is used. *)
   val to_string : t -> string
 
   (** [of_z x] builds an element of type [t] from the Zarith element [x]. [mod
@@ -162,18 +157,15 @@ module type PRIME = sig
 
   (** [to_z x] builds a Zarith element, using the decimal representation.
       Arithmetic on the result can be done using the modular functions on
-      integers
-  *)
+      integers *)
   val to_z : t -> Z.t
 
-  (** Returns the Legendre symbol of the parameter. Note it does not work for
-      [p = 2]
-  *)
+  (** Returns the Legendre symbol of the parameter. Note it does not work for [p
+      = 2] *)
   val legendre_symbol : t -> Z.t
 
   (** [is_quadratic_residue x] returns [true] if [x] is a quadratic residue i.e.
-      if there exists [n] such that [n^2 mod order = x]
-  *)
+      if there exists [n] such that [n^2 mod p = x] *)
   val is_quadratic_residue : t -> bool
 
   (** [sqrt_opt x] returns a square root of [x] as an option if it does exist.
@@ -185,7 +177,8 @@ module type PRIME = sig
   val of_int : int -> t
 end
 
-(** Module type for prime field with additional functions to manipulate roots of unity *)
+(** Module type for prime field with additional functions to manipulate roots of
+    unity *)
 module type PRIME_WITH_ROOT_OF_UNITY = sig
   include PRIME
 
