@@ -168,7 +168,9 @@ module type PRIME = sig
   *)
   val is_quadratic_residue : t -> bool
 
-  (** [sqrt_opt x] returns a square root of [x] *)
+  (** [sqrt_opt x] returns a square root of [x] as an option if it does exist.
+      If it does not exist, returns [None]. Equivalenty it returns a value [y]
+      such that [y^2 mod order = x]. *)
   val sqrt_opt : t -> t option
 
   (** [of_int x] is equivalent to [of_z (Z.of_int x)] *)
