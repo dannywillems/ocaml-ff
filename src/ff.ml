@@ -30,6 +30,8 @@ end) : PRIME_WITH_ROOT_OF_UNITY = struct
       modulo the order *)
   let check_bytes _bs = true
 
+  let copy x = x
+
   let is_zero s = Z.equal (Z.erem s order) Z.zero
 
   let is_one s = Z.equal (Z.erem s order) Z.one
@@ -206,6 +208,8 @@ end = struct
       let y = Bytes.sub b (size_in_bytes / 2) (size_in_bytes / 2) in
       Fp.check_bytes x && Fp.check_bytes y
     else false
+
+  let copy x = x
 
   let zero = (Fp.zero, Fp.zero)
 

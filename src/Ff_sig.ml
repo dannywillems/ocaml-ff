@@ -14,6 +14,9 @@ module type BASE = sig
       of a field element *)
   val check_bytes : Bytes.t -> bool
 
+  (** [copy x] creates a fresh copy of [x] *)
+  val copy : t -> t
+
   (** The neutral element for the addition *)
   val zero : t
 
