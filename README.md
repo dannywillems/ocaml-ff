@@ -99,17 +99,14 @@ Then open `_build/default/_doc/_html/index.html`.
 ## Development
 
 ```
-# Install dependencies
-opam install . --deps-only --with-test
-
-# Build
-dune build
-
-# Run tests
-dune runtest
-
-# Format code
-dune fmt
+make setup          # Install dependencies
+make build          # Build the project
+make test           # Run tests (native + JS)
+make check-format   # Check code formatting
+make format         # Format code (auto-promote)
+make doc            # Generate documentation
+make clean          # Clean build artifacts
+make release        # Release to opam-repository
 ```
 
 ## License
