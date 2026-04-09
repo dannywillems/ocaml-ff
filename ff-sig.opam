@@ -10,7 +10,6 @@ depends: [
   "ocaml" {>= "5.0"}
   "dune" {>= "3.15" & >= "3.15"}
   "zarith" {>= "1.9.1" & < "2.0"}
-  "bisect_ppx" {with-test & >= "2.5"}
   "odoc" {with-doc}
 ]
 build: [

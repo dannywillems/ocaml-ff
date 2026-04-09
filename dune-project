@@ -27,10 +27,7 @@
    (and
     (>= 1.9.1)
     (< 2.0)))
-  (bisect_ppx
-   (and
-    :with-test
-    (>= 2.5)))))
+))
 
 (package
  (name ff)
@@ -49,10 +46,7 @@
    (and
     (= :version)
     :with-test))
-  (bisect_ppx
-   (and
-    :with-test
-    (>= 2.5)))))
+))
 
 (package
  (name ff-pbt)
@@ -68,7 +62,4 @@
   (ff-sig
    (= :version))
   alcotest
-  (bisect_ppx
-   (and
-    :with-test
-    (>= 2.5)))))
+))
