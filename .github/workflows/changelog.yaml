@@ -1,0 +1,36 @@
+name: CHANGELOG related checks per pull requests
+on:
+  pull_request:
+    types: [assigned, opened, synchronize, reopened, labeled, unlabeled]
+    branches:
+      - master
+  merge_group:
+    types: [checks_requested]
+
+jobs:
+  check-changelog:
+    name: Check changelog action
+    runs-on: ubuntu-latest
+    steps:
+      - uses: tarides/changelog-check-action@v3
+        with:
+          changelog: CHANGES.md
+
+  check-changelog-commit:
+    name: Check changelog is in dedicated commit
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - name: Download script
+        run: |
+          curl -sSLO \
+            https://raw.githubusercontent.com/dannywillems/toolbox/main/changelog/check-commit.sh
+          chmod +x check-commit.sh
+      - name: Verify CHANGELOG changes are in own commit
+        run: >
+          ./check-commit.sh
+          "${{ github.event.pull_request.base.sha }}"
+        env:
+          CHANGELOG_FILE: CHANGES.md

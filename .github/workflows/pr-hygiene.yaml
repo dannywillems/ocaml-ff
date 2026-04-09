@@ -1,0 +1,77 @@
+name: PR hygiene checks
+on:
+  pull_request:
+    types: [assigned, opened, synchronize, reopened]
+    branches:
+      - master
+  merge_group:
+    types: [checks_requested]
+
+jobs:
+  check-pr-size:
+    name: Check PR size
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - name: Download script
+        run: |
+          curl -sSLO \
+            https://raw.githubusercontent.com/dannywillems/toolbox/main/pr-hygiene/check-pr-size.sh
+          chmod +x check-pr-size.sh
+      - name: Check PR size
+        run: >
+          ./check-pr-size.sh
+          "${{ github.event.pull_request.base.sha }}"
+
+  check-title-length:
+    name: Check commit title length
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - name: Download script
+        run: |
+          curl -sSLO \
+            https://raw.githubusercontent.com/dannywillems/toolbox/main/pr-hygiene/check-title-length.sh
+          chmod +x check-title-length.sh
+      - name: Check title length
+        run: >
+          ./check-title-length.sh
+          "${{ github.event.pull_request.base.sha }}"
+
+  check-no-fixup:
+    name: Check no fixup commits
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - name: Download script
+        run: |
+          curl -sSLO \
+            https://raw.githubusercontent.com/dannywillems/toolbox/main/pr-hygiene/check-no-fixup.sh
+          chmod +x check-no-fixup.sh
+      - name: Check no fixup commits
+        run: >
+          ./check-no-fixup.sh
+          "${{ github.event.pull_request.base.sha }}"
+
+  check-commit-body:
+    name: Check commit body
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - name: Download script
+        run: |
+          curl -sSLO \
+            https://raw.githubusercontent.com/dannywillems/toolbox/main/pr-hygiene/check-commit-body.sh
+          chmod +x check-commit-body.sh
+      - name: Check commit body
+        run: >
+          ./check-commit-body.sh
+          "${{ github.event.pull_request.base.sha }}"

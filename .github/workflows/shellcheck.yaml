@@ -1,0 +1,21 @@
+name: Shellcheck
+on:
+  pull_request:
+    types: [assigned, opened, synchronize, reopened]
+    branches:
+      - master
+  merge_group:
+    types: [checks_requested]
+
+jobs:
+  shellcheck:
+    name: Shellcheck
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Install shellcheck
+        run: sudo apt-get install -y shellcheck
+      - name: Run shellcheck
+        run: |
+          find . -name '*.sh' -not -path './node_modules/*' \
+            -not -path './_build/*' | xargs shellcheck
