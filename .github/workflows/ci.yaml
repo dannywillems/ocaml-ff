@@ -20,7 +20,7 @@ jobs:
         with:
           ocaml-compiler: "5.4"
       - name: Install ocamlformat
-        run: opam install ocamlformat.0.29.0
+        run: opam install ocamlformat.0.27.0
       - name: Check formatting
         run: opam exec -- dune fmt -- --check
 
@@ -72,3 +72,34 @@ jobs:
         run: opam install . --deps-only --with-test
       - name: Run tests
         run: opam exec -- dune runtest
+
+  test-js:
+    name: Test js_of_ocaml
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v6
+      - uses: ocaml/setup-ocaml@v3
+        with:
+          ocaml-compiler: "5.4"
+      - name: Install dependencies
+        run: |
+          opam install . --deps-only
+          opam install js_of_ocaml js_of_ocaml-ppx \
+            zarith_stubs_js
+      - name: Include js directory in build
+        run: echo '; empty' > dune
+      - name: Build JS target
+        run: opam exec -- dune build @js/runtest-js
+
+  build-doc:
+    name: Build documentation
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v6
+      - uses: ocaml/setup-ocaml@v3
+        with:
+          ocaml-compiler: "5.4"
+      - name: Install dependencies
+        run: opam install . --deps-only --with-doc
+      - name: Build documentation
+        run: opam exec -- dune build @doc

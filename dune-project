@@ -1,4 +1,4 @@
-(lang dune 2.7)
+(lang dune 3.15)
 
 (name ff)
 
@@ -22,7 +22,7 @@
  (synopsis "Minimal finite field signatures")
  (depends
   (ocaml (>= 5.0))
-  (dune (>= 2.7))
+  (dune (>= 3.15))
   (zarith
    (and
     (>= 1.9.1)
@@ -37,7 +37,7 @@
  (synopsis "OCaml implementation of Finite Field operations")
  (depends
   (ocaml (>= 5.0))
-  (dune (>= 2.7))
+  (dune (>= 3.15))
   (zarith
    (and
     (>= 1.9.1)
@@ -60,7 +60,7 @@
   "Property based testing library for finite fields over the package ff-sig")
  (depends
   (ocaml (>= 5.0))
-  (dune (>= 2.7))
+  (dune (>= 3.15))
   (zarith
    (and
     (>= 1.9.1)
