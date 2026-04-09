@@ -10,7 +10,7 @@ bug-reports: "https://github.com/dannywillems/ocaml-ff/issues"
 depends: [
   "ocaml" {>= "5.0"}
   "dune" {>= "3.15" & >= "3.15"}
-  "zarith" {>= "1.9.1" & < "2.0"}
+  "zarith" {>= "1.12"}
   "ff-sig" {= version}
   "alcotest"
   "odoc" {with-doc}

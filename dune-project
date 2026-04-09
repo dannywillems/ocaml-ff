@@ -23,10 +23,7 @@
  (depends
   (ocaml (>= 5.0))
   (dune (>= 3.15))
-  (zarith
-   (and
-    (>= 1.9.1)
-    (< 2.0)))
+  (zarith (>= 1.12))
 ))
 
 (package
@@ -35,10 +32,7 @@
  (depends
   (ocaml (>= 5.0))
   (dune (>= 3.15))
-  (zarith
-   (and
-    (>= 1.9.1)
-    (< 2.0)))
+  (zarith (>= 1.12))
   (ff-sig
    (= :version))
   (alcotest :with-test)
@@ -57,10 +51,7 @@
  (depends
   (ocaml (>= 5.0))
   (dune (>= 3.15))
-  (zarith
-   (and
-    (>= 1.9.1)
-    (< 2.0)))
+  (zarith (>= 1.12))
   (ff-sig
    (= :version))
   alcotest
