@@ -1,6 +1,25 @@
-_build
-_opam
+# Build artifacts
+_build/
 *.install
-.merlin
-_coverage
+
+# opam
+_opam/
+
+# Coverage
+_coverage/
 coverage-raw.json
+
+# IDE
+.idea/
+.vscode/
+*.swp
+*.swo
+*~
+.merlin
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Logs
+*.log
