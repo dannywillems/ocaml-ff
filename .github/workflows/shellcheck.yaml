@@ -18,4 +18,4 @@ jobs:
       - name: Run shellcheck
         run: |
           find . -name '*.sh' -not -path './node_modules/*' \
-            -not -path './_build/*' | xargs shellcheck
+            -not -path './_build/*' | xargs -r shellcheck

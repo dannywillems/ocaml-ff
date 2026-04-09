@@ -7,7 +7,7 @@ license: "MIT"
 homepage: "https://github.com/dannywillems/ocaml-ff"
 bug-reports: "https://github.com/dannywillems/ocaml-ff/issues"
 depends: [
-  "ocaml" {>= "4.08"}
+  "ocaml" {>= "5.0"}
   "dune" {>= "2.7" & >= "2.7"}
   "zarith" {>= "1.9.1" & < "2.0"}
   "ff-sig" {= version}

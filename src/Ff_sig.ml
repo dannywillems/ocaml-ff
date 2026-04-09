@@ -23,7 +23,8 @@ module type BASE = sig
   (** The neutral element for the multiplication *)
   val one : t
 
-  (** [is_zero x] returns [true] if [x] is the neutral element for the addition *)
+  (** [is_zero x] returns [true] if [x] is the neutral element for the addition
+  *)
   val is_zero : t -> bool
 
   (** [is_one x] returns [true] if [x] is the neutral element for the
@@ -36,8 +37,8 @@ module type BASE = sig
       can be given to initialize the PRNG in the requested state. If no state is
       given, no initialisation is performed.
 
-      To create a value of type [Random.State.t], you can use [Random.State.make
-      [|42|]]. *)
+      To create a value of type [Random.State.t], you can use
+      [Random.State.make [|42|]]. *)
   val random : ?state:Random.State.t -> unit -> t
 
   (** {b Use carefully!}
@@ -46,8 +47,8 @@ module type BASE = sig
       state for the PRNG can be given to initialize the PRNG in the requested
       state. If no state is given, no initialisation is performed.
 
-      To create a value of type [Random.State.t], you can use [Random.State.make
-      [|42|]]. *)
+      To create a value of type [Random.State.t], you can use
+      [Random.State.make [|42|]]. *)
   val non_null_random : ?state:Random.State.t -> unit -> t
 
   (** [add a b] returns [a + b mod order] *)
@@ -89,13 +90,13 @@ module type BASE = sig
   val inverse_opt : t -> t option
 
   (** [div_exn a b] returns [a * b^-1]. Raise [Division_by_zero] if [b = zero].
-      Equivalently, [div_exn] returns the unique [y] such that [b * y mod order
-      = a] *)
+      Equivalently, [div_exn] returns the unique [y] such that
+      [b * y mod order = a] *)
   val div_exn : t -> t -> t
 
-  (** [div_opt a b] returns [a * b^-1] as an option. Return [None] if [b =
-      zero]. Equivalently, [div_opt] returns the unique [y] such that [b * y mod
-      order = a] *)
+  (** [div_opt a b] returns [a * b^-1] as an option. Return [None] if
+      [b = zero]. Equivalently, [div_opt] returns the unique [y] such that
+      [b * y mod order = a] *)
   val div_opt : t -> t -> t option
 
   (** Infix operator for {!div_exn} *)
@@ -154,8 +155,8 @@ module type PRIME = sig
       number is used. *)
   val to_string : t -> string
 
-  (** [of_z x] builds an element of type [t] from the Zarith element [x]. [mod
-      p] is applied if [x >= p] *)
+  (** [of_z x] builds an element of type [t] from the Zarith element [x].
+      [mod p] is applied if [x >= p] *)
   val of_z : Z.t -> t
 
   (** [to_z x] builds a Zarith element, using the decimal representation.
@@ -163,8 +164,8 @@ module type PRIME = sig
       integers *)
   val to_z : t -> Z.t
 
-  (** Returns the Legendre symbol of the parameter. Note it does not work for [p
-      = 2] *)
+  (** Returns the Legendre symbol of the parameter. Note it does not work for
+      [p = 2] *)
   val legendre_symbol : t -> Z.t
 
   (** [is_quadratic_residue x] returns [true] if [x] is a quadratic residue i.e.
