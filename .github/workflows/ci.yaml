@@ -1,0 +1,62 @@
+name: OCaml CI
+on:
+  pull_request:
+    types: [assigned, opened, synchronize, reopened]
+    branches:
+      - master
+  push:
+    branches:
+      - master
+  merge_group:
+    types: [checks_requested]
+
+jobs:
+  check-format:
+    name: Check formatting
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: ocaml/setup-ocaml@v3
+        with:
+          ocaml-compiler: "4.14"
+      - name: Install ocamlformat
+        run: opam install ocamlformat
+      - name: Check formatting
+        run: opam exec -- dune fmt -- --check
+
+  build:
+    name: Build
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        ocaml-compiler:
+          - "4.14"
+          - "5.2"
+    steps:
+      - uses: actions/checkout@v4
+      - uses: ocaml/setup-ocaml@v3
+        with:
+          ocaml-compiler: ${{ matrix.ocaml-compiler }}
+      - name: Install dependencies
+        run: opam install . --deps-only --with-test
+      - name: Build
+        run: opam exec -- dune build
+
+  test:
+    name: Test
+    needs: build
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        ocaml-compiler:
+          - "4.14"
+          - "5.2"
+    steps:
+      - uses: actions/checkout@v4
+      - uses: ocaml/setup-ocaml@v3
+        with:
+          ocaml-compiler: ${{ matrix.ocaml-compiler }}
+      - name: Install dependencies
+        run: opam install . --deps-only --with-test
+      - name: Run tests
+        run: opam exec -- dune runtest
