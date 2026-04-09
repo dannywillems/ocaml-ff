@@ -72,15 +72,3 @@
    (and
     :with-test
     (>= 2.5)))))
-
-(package
- (name ff-bench)
- (synopsis
-  "Benchmark library for finite fields over the package ff-sig")
- (depends
-  (ocaml (>= 4.08))
-  (dune (>= 2.7))
-  (ff-sig
-   (= :version))
-  (core (>= v0.13.0))
-  (core_bench (>= v0.13.0))))
