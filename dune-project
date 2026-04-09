@@ -1,2 +1,86 @@
 (lang dune 2.7)
+
 (name ff)
+
+(generate_opam_files true)
+
+(license MIT)
+
+(authors "Danny Willems <be.danny.willems@gmail.com>")
+
+(maintainers "Danny Willems <be.danny.willems@gmail.com>")
+
+(source
+ (github dannywillems/ocaml-ff))
+
+(homepage "https://github.com/dannywillems/ocaml-ff")
+
+(bug_reports "https://github.com/dannywillems/ocaml-ff/issues")
+
+(package
+ (name ff-sig)
+ (synopsis "Minimal finite field signatures")
+ (depends
+  (ocaml (>= 4.08))
+  (dune (>= 2.7))
+  (zarith
+   (and
+    (>= 1.9.1)
+    (< 2.0)))
+  (bisect_ppx
+   (and
+    :with-test
+    (>= 2.5)))))
+
+(package
+ (name ff)
+ (synopsis "OCaml implementation of Finite Field operations")
+ (depends
+  (ocaml (>= 4.08))
+  (dune (>= 2.7))
+  (zarith
+   (and
+    (>= 1.9.1)
+    (< 2.0)))
+  (ff-sig
+   (= :version))
+  (alcotest :with-test)
+  (ff-pbt
+   (and
+    (= :version)
+    :with-test))
+  (bisect_ppx
+   (and
+    :with-test
+    (>= 2.5)))))
+
+(package
+ (name ff-pbt)
+ (synopsis
+  "Property based testing library for finite fields over the package ff-sig")
+ (depends
+  (ocaml (>= 4.08))
+  (dune (>= 2.7))
+  (zarith
+   (and
+    (>= 1.9.1)
+    (< 2.0)))
+  (ff-sig
+   (= :version))
+  alcotest
+  (bisect_ppx
+   (and
+    :with-test
+    (>= 2.5)))))
+
+(package
+ (name ff-bench)
+ (synopsis
+  "Benchmark library for finite fields over the package ff-sig")
+ (depends
+  (ocaml (>= 4.08))
+  (dune (>= 2.7))
+  (ff-sig
+   (= :version))
+  (core (>= v0.13.0))
+  (core_bench (>= v0.13.0))))
