@@ -1,39 +1,24 @@
-## OCaml FF
+# OCaml FF
 
-Play with Finite Field in OCaml
+Finite field arithmetic in OCaml, built on
+[Zarith](https://github.com/ocaml/Zarith) for arbitrary-precision integers.
 
-This library provides functors to instantiate finite field of arbitrary orders (in the limit of Zarith, the dependency to handle arbitrary integers).
+## Features
 
-```ocaml
-module F13 = Ff.MakeFp (struct let prime_order = Z.of_string "13" end)
-module BLSFr = Ff.MakeFp (
-  struct
-    let prime_order = Z.of_string "52435875175126190479447740508185965837690552500527637822603658699938581184513"
-  end
-)
-```
+- Prime fields GF(p) via the `Ff.MakeFp` functor
+- Quadratic extensions GF(p^2) via the `Ff.MakeFp2` functor
+- Tonelli-Shanks square root computation
+- Roots of unity
+- Property-based testing helpers (`ff-pbt`)
+- Optional js_of_ocaml support
 
-## JavaScript compatibility
+## Packages
 
-This library can be transpiled in JavaScript using js_of_ocaml.
-An example is provided in `js/test_js.ml`, with the corresponding `dune` file.
-It instantiates Fp with p = 53. `dune` will compile this into a `FiniteField.js`
-file, exporting methods like `add`, `toString`, `random`, etc. `FiniteField` can
-be used as a Node module. See `js/test/test_js.js` for an example.
-
-```
-# Generate FiniteField.js
-dune build js
-cp _build/default/js/FiniteField.js ./
-node
-```
-
-```js
-var FF = require("./FiniteField.js");
-let x = FF.random();
-let y = FF.random();
-let x_plus_y = FF.add(x, y);
-```
+| Package | Description |
+|---------|-------------|
+| `ff-sig` | Module type signatures for finite fields |
+| `ff` | Functor implementations (`MakeFp`, `MakeFp2`) |
+| `ff-pbt` | Property-based testing for any `Ff_sig.BASE` implementation |
 
 ## Install
 
@@ -41,47 +26,103 @@ let x_plus_y = FF.add(x, y);
 opam install ff
 ```
 
-For a specific version (from 0.2.1), use
-```shell
-opam install ff.0.3.0
-```
-Replace 0.3.0 with the version you want, see [tags](https://gitlab.com/dannywillems/ocaml-ff/tags).
-
-
-## Documentation
-
-See [here](https://dannywillems.gitlab.io/ocaml-ff/)
-
-
-## PBT testing
-
-A package `ff-pbt` is also included and published providing Property Based
-Testing of finite fields based on the generic finite fields interface given in
-`ff`.
-If you have a library implementing finite fields, but not using the functors
-provided by `ff`, you can use:
+## Quick start
 
 ```ocaml
-(* You module is MyField *)
+(* Prime field with p = 13 *)
+module F13 = Ff.MakeFp (struct
+  let prime_order = Z.of_string "13"
+end)
 
+(* BLS12-381 scalar field *)
+module BLS_Fr = Ff.MakeFp (struct
+  let prime_order =
+    Z.of_string
+      "52435875175126190479447740508185965837690552500527637822603658699938581184513"
+end)
+
+let () =
+  let x = F13.random () in
+  let y = F13.random () in
+  let sum = F13.add x y in
+  Printf.printf "%s + %s = %s\n"
+    (F13.to_string x) (F13.to_string y) (F13.to_string sum)
+```
+
+Infix operators are available:
+
+```ocaml
+let open F13 in
+let x = random () in
+let y = random () in
+let z = (x + y) * x in
+assert (z = (x * x) + (y * x))
+```
+
+## Quadratic extensions
+
+```ocaml
+module Fp = Ff.MakeFp (struct
+  let prime_order = Z.of_string "59"
+end)
+
+(* GF(59^2) = Fp[X] / (X^2 - nsr) *)
+module Fp2 = Ff.MakeFp2 (Fp) (struct
+  let nsr = Fp.of_int 5
+end)
+```
+
+## Property-based testing
+
+The `ff-pbt` package provides generic property tests for any
+field implementing `Ff_sig.BASE`:
+
+```ocaml
 module MyFieldProperties = Ff_pbt.MakeFieldProperties (MyField)
 
 let () =
   let open Alcotest in
-  run "MyField" [MyFieldProperties.get_tests()]
+  run "MyField" [MyFieldProperties.get_tests ()]
 ```
 
-It is stronly relying on the `random` function implemented by the finite field module.
+## JavaScript support
 
-## Benchmark
+This library can be compiled to JavaScript using js_of_ocaml.
+See `js/test_js.ml` for an example. Build with:
 
-`ff-bench` is a benchmark library (using `Core_bench`) for finite fields, respecting the signature `Ff_sig.BASE`.
-Here how to use:
-
-```ocaml
-module F337 = Ff.Make (struct let prime_order = Z.of_string "337" end)
-module Bench = Ff_bench.MakeBench (F337)
-let () =
-  let commands = Bench.get_benches "F337" in
-  Core.Command.run (Core.Bench.make_command commands)
 ```
+dune build @js/runtest-js
+```
+
+## Documentation
+
+API documentation is available at
+https://dannywillems.github.io/ocaml-ff/
+
+To generate locally:
+
+```
+dune build @doc
+```
+
+Then open `_build/default/_doc/_html/index.html`.
+
+## Development
+
+```
+# Install dependencies
+opam install . --deps-only --with-test
+
+# Build
+dune build
+
+# Run tests
+dune runtest
+
+# Format code
+dune fmt
+```
+
+## License
+
+MIT
