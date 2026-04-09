@@ -1,4 +1,4 @@
-(lang dune 2.7)
+(lang dune 3.15)
 
 (name ff)
 
@@ -22,22 +22,19 @@
  (synopsis "Minimal finite field signatures")
  (depends
   (ocaml (>= 5.0))
-  (dune (>= 2.7))
+  (dune (>= 3.15))
   (zarith
    (and
     (>= 1.9.1)
     (< 2.0)))
-  (bisect_ppx
-   (and
-    :with-test
-    (>= 2.5)))))
+))
 
 (package
  (name ff)
  (synopsis "OCaml implementation of Finite Field operations")
  (depends
   (ocaml (>= 5.0))
-  (dune (>= 2.7))
+  (dune (>= 3.15))
   (zarith
    (and
     (>= 1.9.1)
@@ -45,14 +42,13 @@
   (ff-sig
    (= :version))
   (alcotest :with-test)
+  (alcotest-js :with-test)
+  (zarith_stubs_js :with-test)
   (ff-pbt
    (and
     (= :version)
     :with-test))
-  (bisect_ppx
-   (and
-    :with-test
-    (>= 2.5)))))
+))
 
 (package
  (name ff-pbt)
@@ -60,7 +56,7 @@
   "Property based testing library for finite fields over the package ff-sig")
  (depends
   (ocaml (>= 5.0))
-  (dune (>= 2.7))
+  (dune (>= 3.15))
   (zarith
    (and
     (>= 1.9.1)
@@ -68,7 +64,4 @@
   (ff-sig
    (= :version))
   alcotest
-  (bisect_ppx
-   (and
-    :with-test
-    (>= 2.5)))))
+))

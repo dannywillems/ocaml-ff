@@ -47,21 +47,20 @@ module ScalarFieldBLS12_381UnitTest_RootOfUnity = struct
   let test_vectors () =
     let vectors =
       [ ( "45578933624873246016802258050230213493140367389966312656957679049059636081617",
-          1 lsl 16 );
+          Z.shift_left Z.one 16 );
         ( "15076889834420168339092859836519192632846122361203618639585008852351569017005",
-          1 lsl 16 );
+          Z.shift_left Z.one 16 );
         ( "21584124886548760190346392867028830688912556631271990304491841940743921295609",
-          1 lsl 32 );
+          Z.shift_left Z.one 32 );
         ( "27611812781829920551290133267575249478648871281233506899293410857719571783635",
-          1 lsl 8 );
+          Z.shift_left Z.one 8 );
         ( "16624801632831727463500847948913128838752380757508923660793891075002624508302",
-          1 lsl 4 ) ]
+          Z.shift_left Z.one 4 ) ]
     in
     List.iter
       (fun (x, n) ->
         assert (
-          ScalarFieldBLS12_381.is_nth_root_of_unity
-            (Z.of_int n)
+          ScalarFieldBLS12_381.is_nth_root_of_unity n
             (ScalarFieldBLS12_381.of_string x)))
       vectors
 

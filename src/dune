@@ -10,9 +10,7 @@
  (modules ff)
  (flags
   (-open Ff_sig))
- (libraries zarith ff-sig)
- (instrumentation
-  (backend bisect_ppx)))
+ (libraries zarith ff-sig))
 
 (library
  (public_name ff-pbt)
