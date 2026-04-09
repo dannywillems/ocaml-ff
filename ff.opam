@@ -12,6 +12,8 @@ depends: [
   "zarith" {>= "1.9.1" & < "2.0"}
   "ff-sig" {= version}
   "alcotest" {with-test}
+  "alcotest-js" {with-test}
+  "zarith_stubs_js" {with-test}
   "ff-pbt" {= version & with-test}
   "odoc" {with-doc}
 ]

@@ -42,6 +42,8 @@
   (ff-sig
    (= :version))
   (alcotest :with-test)
+  (alcotest-js :with-test)
+  (zarith_stubs_js :with-test)
   (ff-pbt
    (and
     (= :version)

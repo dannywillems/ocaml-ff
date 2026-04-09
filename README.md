@@ -10,8 +10,6 @@ Finite field arithmetic in OCaml, built on
 - Tonelli-Shanks square root computation
 - Roots of unity
 - Property-based testing helpers (`ff-pbt`)
-- Optional js_of_ocaml support
-
 ## Packages
 
 | Package | Description |
@@ -83,15 +81,6 @@ module MyFieldProperties = Ff_pbt.MakeFieldProperties (MyField)
 let () =
   let open Alcotest in
   run "MyField" [MyFieldProperties.get_tests ()]
-```
-
-## JavaScript support
-
-This library can be compiled to JavaScript using js_of_ocaml.
-See `js/test_js.ml` for an example. Build with:
-
-```
-dune build @js/runtest-js
 ```
 
 ## Documentation
